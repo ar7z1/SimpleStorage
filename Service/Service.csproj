@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\LogMiddleware.cs" />
     <Compile Include="IoC\ControllerRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
     <Compile Include="IoC\IoCFactory.cs" />
