@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Owin;
+using Service.IoC;
 
 namespace Service
 {
