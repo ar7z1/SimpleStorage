@@ -1,4 +1,6 @@
 ﻿using System;
+using CommandLine;
+using CommandLine.Text;
 using Microsoft.Owin.Hosting;
 
 namespace Service
@@ -7,11 +9,34 @@ namespace Service
     {
         public static void Main(string[] args)
         {
-            string url = "http://localhost:15000";
-            using (WebApp.Start<Startup>(url))
+            var options = new Options();
+            if (Parser.Default.ParseArguments(args, options))
             {
-                Console.WriteLine("Server running on {0}", url);
-                Console.ReadLine();
+                string url = string.Format("http://+:{0}/", options.Port);
+                using (WebApp.Start<Startup>(url))
+                {
+                    Console.WriteLine("Server running on {0}", url);
+                    foreach (string replicaUrl in options.ReplicaUrls)
+                        Console.WriteLine("Replica: {0}", replicaUrl);
+                    Console.ReadLine();
+                }
+            }
+        }
+
+        private class Options
+        {
+            [Option('p', Required = true, HelpText = "Port.")]
+            public int Port { get; set; }
+
+            [OptionArray('r', Required = true, HelpText = "Replica urls.")]
+            public string[] ReplicaUrls { get; set; }
+
+            [HelpOption]
+            public string GetUsage()
+            {
+                HelpText result = HelpText.AutoBuild(this,
+                    current => HelpText.DefaultParsingErrorsHandler(this, current));
+                return result;
             }
         }
     }
