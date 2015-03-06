@@ -4,7 +4,7 @@ name: ar7z1
 author: Artem Zinenko
 email: zinenkoartem@gmail.com
 description: Спецкурс "Распределенные системы"
-baseurl: "" # the subpath of your site, e.g. /blog/
+baseurl: "/courses" # the subpath of your site, e.g. /blog/
 twitter_username: ar7z1
 github_username:  ar7z1
 safe: true
