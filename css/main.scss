@@ -1,0 +1,133 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+
+
+// Our variables
+$base-font-family: 'Nunito', Helvetica, sans-serif;
+$base-font-size:   18px;
+$small-font-size:  $base-font-size * 0.875;
+$base-line-height: 1.5;
+
+$spacing-unit:     30px;
+
+$text-color:       #111;
+$background-color: #fdfdfd;
+$brand-color:      #2a7ae2;
+
+$grey-color:       #828282;
+$grey-color-light: lighten($grey-color, 40%);
+$grey-color-dark:  darken($grey-color, 25%);
+
+$on-palm:          600px;
+$on-laptop:        800px;
+
+
+
+// Using media queries with like this:
+// @include media-query($palm) {
+//     .wrapper {
+//         padding-right: $spacing-unit / 2;
+//         padding-left: $spacing-unit / 2;
+//     }
+// }
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
+
+.site-header {
+  margin: 75px 0 25px 0;
+  text-transform: uppercase;
+  font-style: normal;
+  font-variant: normal;
+}
+
+.site-header a:hover {
+  text-decoration: none;
+}
+
+.name {
+  font-size: 30px;
+  font-weight: light;
+}
+
+.name b {
+  font-weight: bold;
+}
+
+.site-nav {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.meta {
+  float: right;
+}
+
+.meta a {
+  font-size: 40px;
+  color: #111;
+  text-decoration: none;
+  transition: all 0.15s ease-in;
+  -webkit-transition: all 0.15s ease-in;
+}
+
+.meta a:hover {
+  text-decoration: none;
+  text-shadow: 0 0 15px #000;
+}
+
+.meta a:visited {
+  color: #111;
+}
+
+.listing {
+  margin: 25px 0;
+  padding: 0;
+}
+  .listing li {
+    list-style-type: none;
+    margin-bottom: 0;
+    padding: 7px 5px;
+    font-size: 18px;
+  }
+  a {
+    text-decoration: none;
+  }
+  .listing a:hover {
+    text-decoration: none;
+  }
+  .listing span {
+    padding-top: 2px;
+    float: right;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #999;
+  }
+
+.post-header {
+  padding: 10px 10px 10px 23px;
+  border-left: 7px solid #eee;
+  margin: 40px -30px 30px -30px;
+}
+
+.post-meta {
+  padding-top: 5px;
+  text-transform: uppercase;
+  font-site: 13px;
+}
+
+.post-title {
+  font-variant: small-caps;
+}
+
+// Import partials from `sass_dir` (defaults to `_sass`)
+@import
+        "base",
+        "layout",
+        "syntax-highlighting"
+;
