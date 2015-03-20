@@ -5,7 +5,7 @@ footer: true
 
 <section class="content">
   <ul class="listing">
-    {% for post in site.posts %}
+    {% for post in site.posts reversed %}
       <li>
         <span>{{ post.date | date: "%B %e, %Y" }}</span> <a href="{{ post.url | remove_first:'/' }}">{{ post.title }}</a>
       </li>
