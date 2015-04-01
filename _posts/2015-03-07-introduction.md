@@ -2,7 +2,7 @@
 layout: post
 title:  "Вводная лекция"
 categories: NoSQL, BigData
-date:   2015-03-20 01:36:32
+date:   2015-03-07
 ---
 
 [Ссылка на презентацию][presentation].
