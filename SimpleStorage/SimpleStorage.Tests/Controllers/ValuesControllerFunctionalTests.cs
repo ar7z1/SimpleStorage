@@ -11,7 +11,7 @@ using Ploeh.AutoFixture;
 namespace SimpleStorage.Tests.Controllers
 {
     [TestFixture]
-    public class SimpleStorageFunctionalTests
+    public class ValuesControllerFunctionalTests
     {
         [SetUp]
         public void SetUp()
