@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleStorage.Infrastructure
@@ -10,9 +9,6 @@ namespace SimpleStorage.Infrastructure
 
         public IEnumerable<ValueWithId> GetAll()
         {
-            foreach (var key in internalStorage.Keys)
-                Console.Out.WriteLine(key);
-
             lock (internalStorage)
                 return internalStorage.Select(p => new ValueWithId {Id = p.Key, Value = p.Value});
         }
@@ -27,8 +23,6 @@ namespace SimpleStorage.Infrastructure
         {
             lock (internalStorage)
                 internalStorage[id] = value;
-            foreach (var key in internalStorage.Keys)
-                Console.Out.WriteLine(key);
             return true;
         }
 
