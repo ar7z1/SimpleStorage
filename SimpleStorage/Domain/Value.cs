@@ -1,4 +1,4 @@
-﻿namespace SimpleStorage.Infrastructure
+﻿namespace Domain
 {
     public class Value
     {

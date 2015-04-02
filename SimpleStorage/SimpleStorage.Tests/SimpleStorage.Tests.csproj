@@ -89,6 +89,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Client\Client.csproj">
+      <Project>{1C20557A-37CF-41ED-82AC-63B14B8E20E7}</Project>
+      <Name>Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{A46FE6BE-06DA-4580-983D-92347EFA8313}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleStorage\SimpleStorage.csproj">
       <Project>{4FF303FC-FAAA-4345-A65D-3C33A46D6D0E}</Project>
       <Name>SimpleStorage</Name>

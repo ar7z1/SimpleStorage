@@ -2,64 +2,34 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using Client;
+using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
-using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Controllers
 {
     [TestFixture]
     public class SimpleStorageFunctionalTests
     {
-        private const int port = 15000;
-        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
-        private Fixture fixture;
-
         [SetUp]
         public void SetUp()
         {
             fixture = new Fixture();
+            client = new SimpleStorageClient(endpoint);
         }
 
-        private void Put(string id, Value value)
-        {
-            var putUri = endpoint + "api/values/" + id;
-            using (var client = new HttpClient())
-            using (var response = client.PutAsJsonAsync(putUri, value).Result)
-                response.EnsureSuccessStatusCode();
-        }
-
-        private IEnumerable<ValueWithId> GetAll()
-        {
-            var requestUri = endpoint + "api/values/";
-            using (var client = new HttpClient())
-            using (var response = client.GetAsync(requestUri).Result)
-            {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<IEnumerable<ValueWithId>>().Result;
-            }
-        }
-
-        private Value Get(string id)
-        {
-            var requestUri = endpoint + "api/values/" + id;
-            using (var client = new HttpClient())
-            using (var response = client.GetAsync(requestUri).Result)
-            {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<Value>().Result;
-            }
-        }
+        private const int port = 15000;
+        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
+        private Fixture fixture;
+        private SimpleStorageClient client;
 
         [Test]
         public void Delete_UnknownId_ShouldReturnNotFound()
         {
-            var requestUri = endpoint + "api/values/" + fixture.Create<string>();
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
-            using (var client = new HttpClient())
-            using (var response = client.DeleteAsync(requestUri).Result)
-                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+                Assert.Throws<HttpRequestException>(() => client.Delete(fixture.Create<string>()));
         }
 
         [Test]
@@ -69,11 +39,12 @@ namespace SimpleStorage.Tests.Controllers
             var value = fixture.Create<Value>();
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
-                Put(id, value);
+                client.Put(id, value);
 
-                IEnumerable<ValueWithId> actual = GetAll().ToArray();
+                IEnumerable<ValueWithId> actual = client.GetAll().ToArray();
 
-                Assert.That(actual.ToArray(), Has.Some.Matches<ValueWithId>(v => v.Id == id && v.Value.Content == value.Content));
+                Assert.That(actual.ToArray(),
+                    Has.Some.Matches<ValueWithId>(v => v.Id == id && v.Value.Content == value.Content));
             }
         }
 
@@ -85,8 +56,8 @@ namespace SimpleStorage.Tests.Controllers
 
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
-                Put(id, value);
-                var actual = Get(id);
+                client.Put(id, value);
+                Value actual = client.Get(id);
                 Assert.That(actual.Content, Is.EqualTo(value.Content));
             }
         }
@@ -97,8 +68,8 @@ namespace SimpleStorage.Tests.Controllers
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             using (var client = new HttpClient())
             {
-                var requestUri = endpoint + "api/values/" + fixture.Create<string>();
-                using (var response = client.GetAsync(requestUri).Result)
+                string requestUri = endpoint + "api/values/" + fixture.Create<string>();
+                using (HttpResponseMessage response = client.GetAsync(requestUri).Result)
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }
         }

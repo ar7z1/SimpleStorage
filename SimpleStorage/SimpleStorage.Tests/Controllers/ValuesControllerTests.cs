@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Http;
+using Domain;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoRhinoMock;
