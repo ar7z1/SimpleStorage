@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Service")]
+[assembly: AssemblyTitle("SimpleStorage.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Service")]
-[assembly: AssemblyCopyright("Copyright © ar7z1 2014")]
+[assembly: AssemblyCompany("ar7z1")]
+[assembly: AssemblyProduct("SimpleStorage.Tests")]
+[assembly: AssemblyCopyright("Copyright © ar7z1 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("b2591d74-5fa2-4771-b7d1-d034a159950f")]
+[assembly: Guid("3f9d48ae-b69b-4060-bbf5-40ce6dbb1f00")]
 
 // Version information for an assembly consists of the following four values:
 //

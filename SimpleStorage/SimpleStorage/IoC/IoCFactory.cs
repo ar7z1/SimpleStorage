@@ -1,6 +1,6 @@
 ﻿using StructureMap;
 
-namespace Service.IoC
+namespace SimpleStorage.IoC
 {
     public static class IoCFactory
     {

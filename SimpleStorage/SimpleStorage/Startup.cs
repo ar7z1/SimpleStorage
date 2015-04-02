@@ -1,9 +1,9 @@
 ﻿using System.Web.Http;
 using Owin;
-using Service.Controllers;
-using Service.IoC;
+using SimpleStorage.Controllers;
+using SimpleStorage.IoC;
 
-namespace Service
+namespace SimpleStorage
 {
     public class Startup
     {

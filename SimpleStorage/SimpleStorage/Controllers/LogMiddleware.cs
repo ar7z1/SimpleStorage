@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Owin;
 
-namespace Service.Controllers
+namespace SimpleStorage.Controllers
 {
     public class LogMiddleware : OwinMiddleware
     {

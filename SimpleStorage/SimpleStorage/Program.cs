@@ -3,7 +3,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Owin.Hosting;
 
-namespace Service
+namespace SimpleStorage
 {
     public class Program
     {

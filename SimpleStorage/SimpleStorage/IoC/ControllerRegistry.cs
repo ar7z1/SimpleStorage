@@ -2,7 +2,7 @@ using System.Web.Http.Controllers;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
 
-namespace Service.IoC
+namespace SimpleStorage.IoC
 {
     public class ControllerRegistry : Registry
     {

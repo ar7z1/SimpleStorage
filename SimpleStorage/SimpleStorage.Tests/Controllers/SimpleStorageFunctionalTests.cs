@@ -2,9 +2,10 @@
 using System.Net.Http;
 using NUnit.Framework;
 
-namespace Service.Tests.Controllers
+namespace SimpleStorage.Tests.Controllers
 {
-    public class ServiceFunctionalTests : TestBase
+    [TestFixture]
+    public class SimpleStorageFunctionalTests
     {
         private const string endpoint = "http://localhost:15000/";
 

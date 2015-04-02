@@ -4,11 +4,12 @@ using System.Linq;
 using System.Web.Http.Dependencies;
 using StructureMap;
 
-namespace Service.IoC
+namespace SimpleStorage.IoC
 {
     public class DependencyScope : IDependencyScope
     {
         private readonly IContainer container;
+
         public DependencyScope(IContainer container)
         {
             this.container = container;
@@ -16,7 +17,8 @@ namespace Service.IoC
 
         public object GetService(Type serviceType)
         {
-            return serviceType.IsAbstract || serviceType.IsInterface ? container.TryGetInstance(serviceType)
+            return serviceType.IsAbstract || serviceType.IsInterface
+                ? container.TryGetInstance(serviceType)
                 : container.GetInstance(serviceType);
         }
 
@@ -24,7 +26,6 @@ namespace Service.IoC
         {
             return container.GetAllInstances(serviceType).Cast<object>();
         }
-    
 
         public void Dispose()
         {
@@ -36,6 +37,7 @@ namespace Service.IoC
     public class DependencyResolver : DependencyScope, IDependencyResolver
     {
         private readonly IContainer container;
+
         public DependencyResolver(IContainer container) :
             base(container.GetNestedContainer())
         {
@@ -45,7 +47,7 @@ namespace Service.IoC
         public IDependencyScope BeginScope()
         {
             // Create a Nested Container.So that we can dispose the container once the request is completed.
-            var NestedContainer = this.container.GetNestedContainer();
+            var NestedContainer = container.GetNestedContainer();
             return new DependencyScope(NestedContainer);
         }
     }
