@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\SimpleStorageFunctionalTests.cs" />
+    <Compile Include="Controllers\ValuesControllerTests.cs" />
+    <Compile Include="Infrastructure\StorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
