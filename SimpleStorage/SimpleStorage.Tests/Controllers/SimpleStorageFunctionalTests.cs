@@ -63,16 +63,6 @@ namespace SimpleStorage.Tests.Controllers
         }
 
         [Test]
-        public void GetAll_EmptyStorage_ShouldReturnEmpty()
-        {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
-            {
-                var actual = GetAll();
-                Assert.That(actual, Is.Empty);
-            }
-        }
-
-        [Test]
         public void GetAll_NonEmptyStorage_ShouldReturnAll()
         {
             var id = fixture.Create<string>();
