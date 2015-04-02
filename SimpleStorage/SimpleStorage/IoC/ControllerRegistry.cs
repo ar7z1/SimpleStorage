@@ -1,4 +1,5 @@
 using System.Web.Http.Controllers;
+using SimpleStorage.Infrastructure;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
 
@@ -14,6 +15,7 @@ namespace SimpleStorage.IoC
                 p.RegisterConcreteTypesAgainstTheFirstInterface();
                 p.AddAllTypesOf<IHttpController>();
             });
+            For<IStorage>().Singleton();
         }
     }
 }
