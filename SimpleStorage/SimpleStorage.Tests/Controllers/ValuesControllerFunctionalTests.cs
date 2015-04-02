@@ -7,6 +7,8 @@ using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using SimpleStorage.Infrastructure;
+using SimpleStorage.IoC;
 
 namespace SimpleStorage.Tests.Controllers
 {
@@ -18,6 +20,9 @@ namespace SimpleStorage.Tests.Controllers
         {
             fixture = new Fixture();
             client = new SimpleStorageClient(endpoint);
+            var container = IoCFactory.GetContainer();
+            container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
+            container.Configure(c => c.For<IStorage>().Use(new Storage()));
         }
 
         private const int port = 15000;
@@ -63,15 +68,51 @@ namespace SimpleStorage.Tests.Controllers
         }
 
         [Test]
-        public void Get_UnknownId_ShouldReturnNotFound()
+        public void Get_StopInstance_ShouldThrow()
         {
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
-            using (var client = new HttpClient())
             {
-                string requestUri = endpoint + "api/values/" + fixture.Create<string>();
-                using (HttpResponseMessage response = client.GetAsync(requestUri).Result)
-                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+                using (var httpClient = new HttpClient())
+                {
+                    using (
+                        HttpResponseMessage response =
+                            httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
+                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+
+                    using (HttpResponseMessage response = httpClient.GetAsync(endpoint + "api/values").Result)
+                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+                }
             }
+        }
+
+        [Test]
+        public void Get_StartInstance_ShouldNotThrow()
+        {
+            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (HttpResponseMessage response = httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
+                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+
+                    using (HttpResponseMessage response = httpClient.PostAsync(endpoint + "api/admin/start", new ByteArrayContent(new byte[0])).Result)
+                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+
+                    using (HttpResponseMessage response = httpClient.GetAsync(endpoint + "api/values").Result)
+                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                }
+            }
+        }
+
+        [Test]
+        public void Get_UnknownId_ShouldReturnNotFound()
+        {
+            string requestUri = endpoint + "api/values/" + fixture.Create<string>();
+
+            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (var client = new HttpClient())
+            using (HttpResponseMessage response = client.GetAsync(requestUri).Result)
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
     }
 }

@@ -10,6 +10,7 @@ namespace SimpleStorage
         public void Configuration(IAppBuilder appBuilder)
         {
             var config = new HttpConfiguration {DependencyResolver = new DependencyResolver(IoCFactory.GetContainer())};
+            config.Routes.MapHttpRoute("AdminApi", "api/admin/{action}", new {controller = "Admin"});
             config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new {id = RouteParameter.Optional});
             appBuilder.Use<LogMiddleware>();
             appBuilder.UseWebApi(config);

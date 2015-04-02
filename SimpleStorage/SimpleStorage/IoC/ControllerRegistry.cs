@@ -16,6 +16,7 @@ namespace SimpleStorage.IoC
                 p.AddAllTypesOf<IHttpController>();
             });
             For<IStorage>().Singleton();
+            For<IStateRepository>().Singleton();
         }
     }
 }
