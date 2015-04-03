@@ -3,6 +3,8 @@ using System.Linq;
 using CommandLine;
 using CommandLine.Text;
 using Microsoft.Owin.Hosting;
+using SimpleStorage.Infrastructure;
+using SimpleStorage.IoC;
 
 namespace SimpleStorage
 {
@@ -13,6 +15,8 @@ namespace SimpleStorage
             var options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
+                IoCFactory.GetContainer()
+                    .Configure(c => c.For<ITopology>().Use(new Topology(options.Ports)).Singleton());
                 using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
                 {
                     Console.WriteLine("Server running on port {0}", options.Port);
@@ -30,7 +34,8 @@ namespace SimpleStorage
             [Option("rp", Required = false, HelpText = "Ports.")]
             public string PortsString { get; set; }
 
-            public int[] Ports {
+            public int[] Ports
+            {
                 get
                 {
                     if (string.IsNullOrEmpty(PortsString))
@@ -42,7 +47,7 @@ namespace SimpleStorage
             [HelpOption]
             public string GetUsage()
             {
-                var result = HelpText.AutoBuild(this,
+                HelpText result = HelpText.AutoBuild(this,
                     current => HelpText.DefaultParsingErrorsHandler(this, current));
                 return result;
             }

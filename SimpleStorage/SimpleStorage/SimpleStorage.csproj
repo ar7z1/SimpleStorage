@@ -85,10 +85,12 @@
     <Compile Include="Infrastructure\IOperationLog.cs" />
     <Compile Include="Infrastructure\IStateRepository.cs" />
     <Compile Include="Infrastructure\IStorage.cs" />
+    <Compile Include="Infrastructure\ITopology.cs" />
     <Compile Include="Infrastructure\OperationLog.cs" />
     <Compile Include="Infrastructure\State.cs" />
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />
+    <Compile Include="Infrastructure\Topology.cs" />
     <Compile Include="IoC\ControllerRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
     <Compile Include="IoC\IoCFactory.cs" />
