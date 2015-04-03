@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain;
 
 namespace SimpleStorage.Infrastructure
 {
     public class OperationLog : IOperationLog
     {
-        private List<Operation> log = new List<Operation>();
+        private readonly List<Operation> log = new List<Operation>();
 
 
         public void Add(Operation operation)
@@ -18,7 +19,11 @@ namespace SimpleStorage.Infrastructure
         public IEnumerable<Operation> Read(int position, int count)
         {
             lock (log)
+            {
+                if (position > log.Count)
+                    return Enumerable.Empty<Operation>();
                 return log.GetRange(position, Math.Min(count, log.Count - position));
+            }
         }
     }
 }

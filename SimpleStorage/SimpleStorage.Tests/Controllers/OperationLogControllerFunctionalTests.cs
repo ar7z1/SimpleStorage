@@ -54,7 +54,7 @@ namespace SimpleStorage.Tests.Controllers
         }
 
         [Test]
-        public void ReadWithSeek_Always_ShouldSkip()
+        public void Read_WithSeek_ShouldSkip()
         {
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
@@ -65,6 +65,16 @@ namespace SimpleStorage.Tests.Controllers
                 Operation[] actual = operationLogClient.Read(1, 1).ToArray();
 
                 Assert.That(actual.Length, Is.EqualTo(1));
+            }
+        }
+
+        [Test]
+        public void Read_BigPosition_ShouldReturnEmpty()
+        {
+            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            {
+                Operation[] actual = operationLogClient.Read(1000, 1).ToArray();
+                Assert.That(actual.Length, Is.EqualTo(0));
             }
         }
     }
