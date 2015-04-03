@@ -65,7 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IOperationLogClient.cs" />
     <Compile Include="ISimpleStorageClient.cs" />
+    <Compile Include="OperationLogClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleStorageClient.cs" />
   </ItemGroup>

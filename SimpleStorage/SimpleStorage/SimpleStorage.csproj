@@ -81,8 +81,11 @@
   <ItemGroup>
     <Compile Include="Controllers\LogMiddleware.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\OperationsController.cs" />
+    <Compile Include="Infrastructure\IOperationLog.cs" />
     <Compile Include="Infrastructure\IStateRepository.cs" />
     <Compile Include="Infrastructure\IStorage.cs" />
+    <Compile Include="Infrastructure\OperationLog.cs" />
     <Compile Include="Infrastructure\State.cs" />
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />

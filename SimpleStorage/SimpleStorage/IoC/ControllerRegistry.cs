@@ -17,6 +17,7 @@ namespace SimpleStorage.IoC
             });
             For<IStorage>().Singleton();
             For<IStateRepository>().Singleton();
+            For<IOperationLog>().Singleton();
         }
     }
 }

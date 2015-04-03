@@ -22,7 +22,9 @@ namespace SimpleStorage.Tests.Controllers
             client = new SimpleStorageClient(endpoint);
             var container = IoCFactory.GetContainer();
             container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
-            container.Configure(c => c.For<IStorage>().Use(new Storage()));
+            var operationLog = new OperationLog();
+            container.Configure(c => c.For<IOperationLog>().Use(operationLog));
+            container.Configure(c => c.For<IStorage>().Use(new Storage(operationLog)));
         }
 
         private const int port = 15000;

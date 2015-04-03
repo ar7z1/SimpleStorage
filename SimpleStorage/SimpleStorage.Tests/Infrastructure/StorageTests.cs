@@ -2,6 +2,7 @@
 using Domain;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoRhinoMock;
 using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Infrastructure
@@ -16,6 +17,7 @@ namespace SimpleStorage.Tests.Infrastructure
         public void SetUp()
         {
             fixture = new Fixture();
+            fixture.Customize(new AutoRhinoMockCustomization());
             sut = fixture.Create<Storage>();
         }
 

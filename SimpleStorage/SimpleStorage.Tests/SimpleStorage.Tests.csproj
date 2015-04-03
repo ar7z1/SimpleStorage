@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\OperationLogControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerTests.cs" />
     <Compile Include="Infrastructure\StorageTests.cs" />
