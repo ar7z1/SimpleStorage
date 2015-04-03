@@ -24,20 +24,13 @@ namespace SimpleStorage.Tests.Controllers
             container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
             var operationLog = new OperationLog();
             container.Configure(c => c.For<IOperationLog>().Use(operationLog));
-            container.Configure(c => c.For<IStorage>().Use(new Storage(operationLog)));
+            container.Configure(c => c.For<IStorage>().Use(new Storage(operationLog, container.GetInstance<ValueComparer>())));
         }
 
         private const int port = 15000;
         private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
         private Fixture fixture;
         private SimpleStorageClient client;
-
-        [Test]
-        public void Delete_UnknownId_ShouldReturnNotFound()
-        {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
-                Assert.Throws<HttpRequestException>(() => client.Delete(fixture.Create<string>()));
-        }
 
         [Test]
         public void GetAll_NonEmptyStorage_ShouldReturnAll()

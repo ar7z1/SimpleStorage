@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Domain;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
@@ -18,27 +19,8 @@ namespace SimpleStorage.Tests.Infrastructure
         {
             fixture = new Fixture();
             fixture.Customize(new AutoRhinoMockCustomization());
+            fixture.Inject<IComparer<Value>>(new ValueComparer());
             sut = fixture.Create<Storage>();
-        }
-
-        [Test]
-        public void Delete_KnownId_ShouldRemoveIt()
-        {
-            var id = fixture.Create<string>();
-            sut.Set(id, fixture.Create<Value>());
-
-            var actual = sut.Delete(id);
-
-            Assert.That(actual, Is.True);
-            var value = sut.Get(id);
-            Assert.That(value, Is.Null);
-        }
-
-        [Test]
-        public void Delete_UnknownId_ShouldReturnFalse()
-        {
-            var actual = sut.Delete(fixture.Create<string>());
-            Assert.That(actual, Is.False);
         }
 
         [Test]

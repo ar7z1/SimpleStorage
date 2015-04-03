@@ -27,24 +27,6 @@ namespace SimpleStorage.Tests.Controllers
         }
 
         [Test]
-        public void Delete_KnownId_ShouldNotThrow()
-        {
-            var id = fixture.Create<string>();
-            storage.Stub(s => s.Delete(id)).Return(true);
-
-            Assert.DoesNotThrow(() => sut.Delete(id));
-        }
-
-        [Test]
-        public void Delete_UnknownId_ShouldThrow()
-        {
-            var id = fixture.Create<string>();
-            storage.Stub(s => s.Delete(id)).Return(false);
-
-            Assert.Throws<HttpResponseException>(() => sut.Delete(id));
-        }
-
-        [Test]
         public void GetAll_Always_ShouldReturnValuesFromRepository()
         {
             var result = fixture.CreateMany<ValueWithId>();
@@ -74,18 +56,6 @@ namespace SimpleStorage.Tests.Controllers
             storage.Stub(s => s.Get(id)).Return(null);
 
             Assert.Throws<HttpResponseException>(() => sut.Get(id));
-        }
-
-        [Test]
-        public void Put_Always_ShouldUpdate()
-        {
-            var id = fixture.Create<string>();
-            var value = fixture.Create<Value>();
-
-            sut.Put(id, value);
-
-            storage.AssertWasCalled(s => s.Set(id, value));
-            Assert.Throws<HttpResponseException>(() => sut.Delete(id));
         }
     }
 }

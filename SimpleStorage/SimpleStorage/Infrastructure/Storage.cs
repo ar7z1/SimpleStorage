@@ -8,10 +8,12 @@ namespace SimpleStorage.Infrastructure
     {
         private readonly IDictionary<string, Value> internalStorage = new Dictionary<string, Value>();
         private readonly IOperationLog operationLog;
+        private readonly IComparer<Value> valueComparer;
 
-        public Storage(IOperationLog operationLog)
+        public Storage(IOperationLog operationLog, IComparer<Value> valueComparer)
         {
             this.operationLog = operationLog;
+            this.valueComparer = valueComparer;
         }
 
         public IEnumerable<ValueWithId> GetAll()
@@ -28,26 +30,16 @@ namespace SimpleStorage.Infrastructure
 
         public bool Set(string id, Value value)
         {
-            operationLog.Add(new Operation
-            {
-                Id = id,
-                Type = OperationType.Put,
-                Value = value
-            });
             lock (internalStorage)
-                internalStorage[id] = value;
-            return true;
-        }
-
-        public bool Delete(string id)
-        {
-            operationLog.Add(new Operation
             {
-                Id = id,
-                Type = OperationType.Delete
-            });
-            lock (internalStorage)
-                return internalStorage.Remove(id);
+                if (!internalStorage.ContainsKey(id) || valueComparer.Compare(internalStorage[id], value) < 0)
+                {
+                    internalStorage[id] = value;
+                    operationLog.Add(new Operation {Id = id, Value = value});
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

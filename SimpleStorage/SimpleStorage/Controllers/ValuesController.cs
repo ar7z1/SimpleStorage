@@ -47,14 +47,5 @@ namespace SimpleStorage.Controllers
             CheckState();
             storage.Set(id, value);
         }
-
-        // DELETE api/values/5 
-        public void Delete(string id)
-        {
-            CheckState();
-            bool result = storage.Delete(id);
-            if (!result)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-        }
     }
 }

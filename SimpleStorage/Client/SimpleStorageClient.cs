@@ -42,13 +42,5 @@ namespace Client
                 return response.Content.ReadAsAsync<Value>().Result;
             }
         }
-
-        public void Delete(string id)
-        {
-            string uri = endpoint + "api/values/" + id;
-            using (var client = new HttpClient())
-            using (HttpResponseMessage response = client.DeleteAsync(uri).Result)
-                response.EnsureSuccessStatusCode();
-        }
     }
 }
