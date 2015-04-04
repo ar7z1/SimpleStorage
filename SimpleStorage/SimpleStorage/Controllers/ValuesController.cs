@@ -13,7 +13,7 @@ namespace SimpleStorage.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IComparer<Value> valueComparer;
-        private readonly SimpleStorageClient[] clients;
+        private readonly InternalClient[] clients;
         private readonly IStateRepository stateRepository;
         private readonly IStorage storage;
         private readonly int successOperationCount;
@@ -25,7 +25,7 @@ namespace SimpleStorage.Controllers
             this.stateRepository = stateRepository;
             this.configuration = configuration;
             this.valueComparer = valueComparer;
-            clients = topology.Replicas.Select(point => new SimpleStorageClient(1, string.Format("http://{0}/", point))).ToArray();
+            clients = topology.Replicas.Select(point => new InternalClient(string.Format("http://{0}/", point))).ToArray();
             successOperationCount = (topology.Replicas.Count() + 1)/2 + 1;
         }
 
@@ -41,26 +41,22 @@ namespace SimpleStorage.Controllers
             CheckState();
             var result = storage.Get(id);
             var success = 1;
-            Parallel.ForEach(clients, client =>
+            foreach (var client in clients)
             {
                 try
                 {
                     var candidate = client.Get(id);
-                    lock (lockObj)
+                    success += 1;
+                    if (result != null && candidate != null)
                     {
-                        success += 1;
-                        if (result != null && candidate != null)
-                        {
-                            if (valueComparer.Compare(result, candidate) < 0)
-                                result = candidate;
-                            return;
-                        }
-                        result = result ?? candidate;
-
+                        if (valueComparer.Compare(result, candidate) < 0)
+                            result = candidate;
+                        continue;
                     }
+                    result = result ?? candidate;
                 }
                 catch { }
-            });
+            }
             if (success < successOperationCount)
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             if (result == null)
@@ -74,13 +70,14 @@ namespace SimpleStorage.Controllers
             CheckState();
             storage.Set(id, value);
             var success = 1;
-            Parallel.ForEach(clients, client => {
+            foreach (var client in clients)
+            {
                                                     try
                                                     {
                                                         client.Put(id, value);
                                                         success += 1;
                                                     } catch {}
-            });
+            }
             if (success < successOperationCount)
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
         }
