@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Client;
@@ -29,10 +30,21 @@ namespace SimpleStorage.Tests.Controllers
             {
                 client.Put(id, value);
 
-                var actual = client.GetAll().ToArray();
+                var actual = GetAll().ToArray();
 
                 Assert.That(actual.ToArray(),
                     Has.Some.Matches<ValueWithId>(v => v.Id == id && v.Value.Content == value.Content));
+            }
+        }
+
+        private IEnumerable<ValueWithId> GetAll()
+        {
+            var requestUri = endpoint + "api/values/";
+            using (var httpClient = new HttpClient())
+            using (var response = httpClient.GetAsync(requestUri).Result)
+            {
+                response.EnsureSuccessStatusCode();
+                return response.Content.ReadAsAsync<IEnumerable<ValueWithId>>().Result;
             }
         }
 

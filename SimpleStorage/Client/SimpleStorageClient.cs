@@ -25,17 +25,6 @@ namespace Client
                 response.EnsureSuccessStatusCode();
         }
 
-        public IEnumerable<ValueWithId> GetAll()
-        {
-            var requestUri = endpoints.First() + "api/values/";
-            using (var client = new HttpClient())
-            using (var response = client.GetAsync(requestUri).Result)
-            {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<IEnumerable<ValueWithId>>().Result;
-            }
-        }
-
         public Value Get(string id)
         {
             var requestUri = endpoints.First() + "api/values/" + id;
