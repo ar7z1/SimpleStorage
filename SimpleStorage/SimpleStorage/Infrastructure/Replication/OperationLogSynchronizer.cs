@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client;
 using Domain;
 
-namespace SimpleStorage.Infrastructure.Polling
+namespace SimpleStorage.Infrastructure.Replication
 {
     public class OperationLogSynchronizer : IOperationLogSynchronizer
     {

@@ -5,7 +5,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Owin.Hosting;
 using SimpleStorage.Infrastructure;
-using SimpleStorage.Infrastructure.Polling;
+using SimpleStorage.Infrastructure.Replication;
 using SimpleStorage.IoC;
 
 namespace SimpleStorage
@@ -33,13 +33,12 @@ namespace SimpleStorage
                 {
                     
                     Console.WriteLine("Server running on port {0}", options.Port);
-
-                    if (options.ReplicasPorts.Any())
-                        Console.WriteLine("Replicas running on ports {0}", string.Join(", ", options.ReplicasPorts));
-
                     var cts = new CancellationTokenSource();
                     CancellationToken cancellationToken = cts.Token;
                     var synchronizationTask = IoCFactory.GetContainer().GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
+                    if (options.ReplicasPorts.Any())
+                        Console.WriteLine("Replicas running on ports {0}", string.Join(", ", options.ReplicasPorts));
+
                     if (options.ShardsPorts.Any())
                         Console.WriteLine("Shards running on ports {0}", string.Join(", ", options.ShardsPorts));
 
