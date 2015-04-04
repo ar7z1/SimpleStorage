@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Http.ExceptionHandling;
 
-namespace SimpleStorage.Controllers
+namespace Core
 {
     public class ConsoleExceptionLogger : ExceptionLogger
     {
