@@ -69,9 +69,10 @@ namespace SimpleStorage.Tests.Infrastructure
         public void Update_Always_ShouldOverwrite()
         {
             var id = fixture.Create<string>();
-            var oldValue = fixture.Create<Value>();
+            var oldValue = fixture.Build<Value>().With(v => v.Revision, 0).Create();
             sut.Set(id, oldValue);
-            var newValue = fixture.Create<Value>();
+            var newContent = fixture.Create<string>();
+            var newValue = fixture.Build<Value>().With(v => v.Content, newContent).With(v => v.Revision, 1).Create();
 
             sut.Set(id, newValue);
 
