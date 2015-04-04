@@ -19,7 +19,8 @@ namespace SimpleStorage.Infrastructure.Polling
         {
             this.storage = storage;
             this.configuration = configuration;
-            operationLogClient = new OperationLogClient(configuration.MasterEndpoint.ToString());
+            if (!configuration.IsMaster)
+                operationLogClient = new OperationLogClient(string.Format("http://{0}/", configuration.MasterEndpoint));
         }
 
         public Task Synchronize(CancellationToken cancellationToken)
