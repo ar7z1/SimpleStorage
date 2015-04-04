@@ -9,7 +9,6 @@ namespace SimpleStorage.Infrastructure
     {
         private readonly List<Operation> log = new List<Operation>();
 
-
         public void Add(Operation operation)
         {
             lock (log)
@@ -24,6 +23,12 @@ namespace SimpleStorage.Infrastructure
                     return Enumerable.Empty<Operation>();
                 return log.GetRange(position, Math.Min(count, log.Count - position));
             }
+        }
+
+        public void RemoveAll()
+        {
+            lock (log)
+                log.Clear();
         }
     }
 }

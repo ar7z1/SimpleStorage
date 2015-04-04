@@ -177,5 +177,16 @@ namespace SimpleStorage.Tests.Infrastructure
 
             Assert.That(actual, Is.True);
         }
+
+        [Test]
+        public void RemoveAll_Always_ShouldRemoveAllData()
+        {
+            sut.Set("id", new Value {Content = "content"});
+
+            sut.RemoveAll();
+
+            var actual = sut.GetAll();
+            Assert.That(actual, Is.Empty);
+        }
     }
 }

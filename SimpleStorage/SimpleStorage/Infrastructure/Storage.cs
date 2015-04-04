@@ -41,5 +41,11 @@ namespace SimpleStorage.Infrastructure
             }
             return false;
         }
+
+        public void RemoveAll()
+        {
+            lock (internalStorage)
+                internalStorage.Clear();
+        }
     }
 }

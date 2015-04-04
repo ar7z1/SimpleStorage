@@ -5,11 +5,15 @@ namespace SimpleStorage.Controllers
 {
     public class AdminController : ApiController
     {
+        private readonly IOperationLog operationLog;
         private readonly IStateRepository stateRepository;
+        private readonly IStorage storage;
 
-        public AdminController(IStateRepository stateRepository)
+        public AdminController(IStateRepository stateRepository, IStorage storage, IOperationLog operationLog)
         {
             this.stateRepository = stateRepository;
+            this.storage = storage;
+            this.operationLog = operationLog;
         }
 
         [HttpPost]
@@ -22,6 +26,13 @@ namespace SimpleStorage.Controllers
         public void Stop()
         {
             stateRepository.SetState(State.Stopped);
+        }
+
+        [HttpPost]
+        public void RemoveAllData()
+        {
+            operationLog.RemoveAll();
+            storage.RemoveAll();
         }
     }
 }

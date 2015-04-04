@@ -7,5 +7,6 @@ namespace SimpleStorage.Infrastructure
     {
         void Add(Operation operation);
         IEnumerable<Operation> Read(int position, int count);
+        void RemoveAll();
     }
 }

@@ -8,5 +8,6 @@ namespace SimpleStorage.Infrastructure
         IEnumerable<ValueWithId> GetAll();
         Value Get(string id);
         bool Set(string id, Value value);
+        void RemoveAll();
     }
 }
