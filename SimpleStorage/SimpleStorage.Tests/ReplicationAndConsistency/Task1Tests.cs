@@ -21,6 +21,12 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
             slave1Client = new SimpleStorageClient(slave1Endpoint);
             slave2Client = new SimpleStorageClient(slave2Endpoint);
             fullTopologyClient = new SimpleStorageClient(masterEndpoint, slave1Endpoint, slave2Endpoint);
+            using (var httpClient = new HttpClient())
+            {
+                ActionOnReplica(slave1Endpoint, httpClient, "start");
+                ActionOnReplica(slave2Endpoint, httpClient, "start");
+                ActionOnReplica(masterEndpoint, httpClient, "start");
+            }
         }
 
         private readonly string masterEndpoint = "http://127.0.0.1:16000/";
@@ -35,22 +41,23 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
         {
             using (var httpClient = new HttpClient())
             {
-                using (
-                    HttpResponseMessage response =
-                        httpClient.PostAsync(replica + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
-                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+                ActionOnReplica(replica, httpClient, "stop");
 
-                for (int i = 0; i < 100; ++i)
+                for (int i = 0; i < 2; ++i)
                 {
                     fullTopologyClient.Get(id);
                 }
 
-                using (
-                    HttpResponseMessage response =
-                        httpClient.PostAsync(replica + "api/admin/start", new ByteArrayContent(new byte[0])).Result
-                    )
-                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+                ActionOnReplica(replica, httpClient, "start");
             }
+        }
+
+        private static void ActionOnReplica(string replica, HttpClient httpClient, string action)
+        {
+            using (
+                HttpResponseMessage response =
+                    httpClient.PostAsync(replica + "api/admin/" + action, new ByteArrayContent(new byte[0])).Result)
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
         }
 
         private static Constraint CheckHttpException(HttpStatusCode code)
@@ -69,6 +76,7 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
             {
                 fullTopologyClient.Get(id);
             }
+            Thread.Sleep(2000);
             TestReplicaDown(slave1Endpoint, id);
             TestReplicaDown(slave2Endpoint, id);
             TestReplicaDown(masterEndpoint, id);
