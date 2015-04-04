@@ -3,48 +3,48 @@ using Client;
 using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 using SimpleStorage.Infrastructure;
 using SimpleStorage.IoC;
-using StructureMap;
 
 namespace SimpleStorage.Tests.Controllers
 {
     [TestFixture]
     public class OperationLogControllerFunctionalTests
     {
+        private const int port = 15000;
+        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
+        private OperationLogClient operationLogClient;
+        private SimpleStorageClient storageClient;
+
         [SetUp]
         public void SetUp()
         {
-            fixture = new Fixture();
             storageClient = new SimpleStorageClient(endpoint);
             operationLogClient = new OperationLogClient(endpoint);
-            Container container = IoCFactory.GetContainer();
+
+            var container = IoCFactory.GetContainer();
+
             container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
+
             var operationLog = new OperationLog();
             container.Configure(c => c.For<IOperationLog>().Use(operationLog));
-            container.Configure(
-                c => c.For<IStorage>().Use(new Storage(operationLog, container.GetInstance<ValueComparer>())));
-        }
 
-        private const int port = 15000;
-        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
-        private Fixture fixture;
-        private SimpleStorageClient storageClient;
-        private OperationLogClient operationLogClient;
+            var storage = new Storage(operationLog, container.GetInstance<ValueComparer>());
+            container.Configure(c => c.For<IStorage>().Use(storage));
+        }
 
         [Test]
         public void Read_Always_ShouldReturnAllOperations()
         {
-            var id = fixture.Create<string>();
-            var version1 = fixture.Build<Value>().With(v => v.IsDeleted, false).Create();
+            const string id = "id";
+            var version1 = new Value {Content = "content", IsDeleted = false, Revision = 0};
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
                 storageClient.Put(id, version1);
-                var version2 = new Value {IsDeleted = true, Revision = version1.Revision + 1};
+                var version2 = new Value {IsDeleted = true, Revision = 1, Content = "anotherContent"};
                 storageClient.Put(id, version2);
 
-                Operation[] actual = operationLogClient.Read(0, 100).ToArray();
+                var actual = operationLogClient.Read(0, 100).ToArray();
 
                 Assert.That(actual.Length, Is.EqualTo(2));
                 Assert.That(actual[0].Id, Is.EqualTo(id));
@@ -60,11 +60,11 @@ namespace SimpleStorage.Tests.Controllers
         {
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
-                storageClient.Put(fixture.Create<string>(), fixture.Create<Value>());
-                storageClient.Put(fixture.Create<string>(), fixture.Create<Value>());
-                storageClient.Put(fixture.Create<string>(), fixture.Create<Value>());
+                storageClient.Put("id1", new Value {Content = "1"});
+                storageClient.Put("id2", new Value {Content = "2"});
+                storageClient.Put("id3", new Value {Content = "3"});
 
-                Operation[] actual = operationLogClient.Read(1, 1).ToArray();
+                var actual = operationLogClient.Read(1, 1).ToArray();
 
                 Assert.That(actual.Length, Is.EqualTo(1));
             }
@@ -75,7 +75,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
-                Operation[] actual = operationLogClient.Read(1000, 1).ToArray();
+                var actual = operationLogClient.Read(1000, 1).ToArray();
                 Assert.That(actual.Length, Is.EqualTo(0));
             }
         }
