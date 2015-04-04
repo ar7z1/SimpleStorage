@@ -18,11 +18,12 @@ namespace SimpleStorage.Tests.Controllers
         [SetUp]
         public void SetUp()
         {
-            storage = new Storage(new OperationLog(), new ValueComparer());
+            var valueComparer = new ValueComparer();
+            storage = new Storage(new OperationLog(), valueComparer);
             stateRepository = new StateRepository();
             var topology = new Topology(new int[0]);
             var configuration = new Configuration(topology) {CurrentNodePort = 15000, OtherShardsPorts = new int[0]};
-            sut = new ValuesController(storage, stateRepository, configuration);
+            sut = new ValuesController(storage, stateRepository, configuration, topology, valueComparer);
         }
 
         [Test]

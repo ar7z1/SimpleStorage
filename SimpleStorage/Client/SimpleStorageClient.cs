@@ -8,13 +8,17 @@ namespace Client
     public class SimpleStorageClient : ISimpleStorageClient
     {
         private readonly string[] endpoints;
-        private readonly int attempts = 5;
+        private readonly int attempts;
 
-        public SimpleStorageClient(params string[] endpoints)
+        public SimpleStorageClient(params string[] endpoints): this(5, endpoints)
+        {}
+
+        public SimpleStorageClient(int attempts,params string[] endpoints)
         {
             if (endpoints == null || !endpoints.Any())
                 throw new ArgumentException("Empty endpoints!", "endpoints");
             this.endpoints = endpoints;
+            this.attempts = attempts;
         }
 
         public void Put(string id, Value value)
