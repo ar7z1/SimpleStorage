@@ -11,15 +11,15 @@ namespace SimpleStorage.Infrastructure.Polling
     {
         private readonly OperationLogClient operationLogClient;
         private readonly IStorage storage;
-        private readonly IMasterConfiguration masterConfiguration;
+        private readonly IConfiguration configuration;
 
         private int position;
 
-        public OperationLogSynchronizer(ITopology topology, IStorage storage, IMasterConfiguration masterConfiguration)
+        public OperationLogSynchronizer(IStorage storage, IConfiguration configuration)
         {
             this.storage = storage;
-            this.masterConfiguration = masterConfiguration;
-            operationLogClient = new OperationLogClient(topology.Replicas.First().ToString());
+            this.configuration = configuration;
+            operationLogClient = new OperationLogClient(configuration.MasterEndpoint.ToString());
         }
 
         public Task Synchronize(CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ namespace SimpleStorage.Infrastructure.Polling
 
         private void SynchronizationAction(CancellationToken token)
         {
-            if (masterConfiguration.IsMaster)
+            if (configuration.IsMaster)
                 return;
             while (true)
             {

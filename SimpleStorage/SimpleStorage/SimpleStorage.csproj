@@ -90,12 +90,10 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
     <Compile Include="IConfiguration.cs" />
-    <Compile Include="Infrastructure\IMasterConfiguration.cs" />
     <Compile Include="Infrastructure\IOperationLog.cs" />
     <Compile Include="Infrastructure\IStateRepository.cs" />
     <Compile Include="Infrastructure\IStorage.cs" />
     <Compile Include="Infrastructure\ITopology.cs" />
-    <Compile Include="Infrastructure\MasterConfiguration.cs" />
     <Compile Include="Infrastructure\OperationLog.cs" />
     <Compile Include="Infrastructure\Polling\IOperationLogSynchronizer.cs" />
     <Compile Include="Infrastructure\Polling\OperationLogSynchronizer.cs" />
