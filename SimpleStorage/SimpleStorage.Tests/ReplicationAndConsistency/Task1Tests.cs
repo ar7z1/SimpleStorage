@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
-using System.Web.Http;
 using Client;
 using Domain;
-using Microsoft.Owin.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
