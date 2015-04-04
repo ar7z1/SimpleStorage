@@ -3,34 +3,22 @@ using Client;
 using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
-using SimpleStorage.Infrastructure;
-using SimpleStorage.IoC;
 
 namespace SimpleStorage.Tests.Controllers
 {
-    [TestFixture]
-    public class OperationLogControllerFunctionalTests
+    public class OperationLogControllerFunctionalTests : FuctionalTestBase
     {
         private const int port = 15000;
         private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
         private OperationLogClient operationLogClient;
         private SimpleStorageClient storageClient;
 
-        [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
+
             storageClient = new SimpleStorageClient(endpoint);
             operationLogClient = new OperationLogClient(endpoint);
-
-            var container = IoCFactory.GetContainer();
-
-            container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
-
-            var operationLog = new OperationLog();
-            container.Configure(c => c.For<IOperationLog>().Use(operationLog));
-
-            var storage = new Storage(operationLog, container.GetInstance<ValueComparer>());
-            container.Configure(c => c.For<IStorage>().Use(storage));
         }
 
         [Test]

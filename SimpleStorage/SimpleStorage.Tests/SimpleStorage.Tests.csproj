@@ -83,6 +83,7 @@
     <Compile Include="Controllers\OperationLogControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerTests.cs" />
+    <Compile Include="FuctionalTestBase.cs" />
     <Compile Include="Infrastructure\StorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
