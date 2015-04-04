@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+using Domain;
 using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Controllers
@@ -34,5 +37,13 @@ namespace SimpleStorage.Controllers
             operationLog.RemoveAll();
             storage.RemoveAll();
         }
+
+
+        [HttpGet]
+        public IEnumerable<ValueWithId> GetAllLocalData()
+        {
+            return storage.GetAll().ToArray();
+        }
+
     }
 }

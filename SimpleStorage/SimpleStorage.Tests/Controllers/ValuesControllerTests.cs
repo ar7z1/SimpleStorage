@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Web.Http;
 using Domain;
 using NUnit.Framework;
@@ -24,26 +23,6 @@ namespace SimpleStorage.Tests.Controllers
             var topology = new Topology(new int[0]);
             var configuration = new Configuration(topology) {CurrentNodePort = 15000, OtherShardsPorts = new int[0]};
             sut = new ValuesController(storage, stateRepository, configuration);
-        }
-
-        [Test]
-        public void GetAll_Stopped_ShouldThrow()
-        {
-            storage.Set("id", new Value());
-            stateRepository.SetState(State.Stopped);
-
-            Assert.Throws(CheckHttpException(HttpStatusCode.InternalServerError), () => sut.Get());
-        }
-
-        [Test]
-        public void GetAll_Started_ShouldReturnValuesFromRepository()
-        {
-            storage.Set("id", new Value());
-
-            var actual = sut.Get().ToArray();
-
-            Assert.That(actual.Length, Is.EqualTo(1));
-            Assert.That(actual[0].Id, Is.EqualTo("id"));
         }
 
         [Test]
