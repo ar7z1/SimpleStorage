@@ -9,6 +9,7 @@ using NUnit.Framework.Constraints;
 
 namespace SimpleStorage.Tests.ReplicationAndConsistency
 {
+    [Ignore]
     public class Task1Tests : FuctionalTestBase
     {
         private readonly string masterEndpoint = "http://127.0.0.1:16000/";
