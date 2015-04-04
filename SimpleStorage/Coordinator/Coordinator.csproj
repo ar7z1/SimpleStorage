@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ShardMappingController.cs" />
     <Compile Include="IoC\CoordinatorRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
     <Compile Include="IoC\IoCFactory.cs" />
