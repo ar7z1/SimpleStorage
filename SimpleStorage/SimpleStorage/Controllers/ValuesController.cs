@@ -9,13 +9,15 @@ namespace SimpleStorage.Controllers
 {
     public class ValuesController : ApiController
     {
+        private readonly IConfiguration configuration;
         private readonly IStateRepository stateRepository;
         private readonly IStorage storage;
 
-        public ValuesController(IStorage storage, IStateRepository stateRepository)
+        public ValuesController(IStorage storage, IStateRepository stateRepository, IConfiguration configuration)
         {
             this.storage = storage;
             this.stateRepository = stateRepository;
+            this.configuration = configuration;
         }
 
         // GET api/values 
