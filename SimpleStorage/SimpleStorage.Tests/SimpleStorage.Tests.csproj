@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\OperationLogControllerFunctionalTests.cs" />
+    <Compile Include="Controllers\AdminControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerTests.cs" />
     <Compile Include="FuctionalTestBase.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
@@ -38,6 +39,30 @@ namespace SimpleStorage.Controllers
             storage.RemoveAll();
         }
 
+        private void CheckState()
+        {
+            if (stateRepository.GetState() != State.Started)
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+        }
+
+        // GET api/values/5 
+        [HttpGet]
+        public Value InternalGet(string id)
+        {
+            CheckState();
+            var result = storage.Get(id);
+            if (result == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            return result;
+        }
+
+        // PUT api/values/5
+        [HttpPut]
+        public void InternalPut(string id, [FromBody] Value value)
+        {
+            CheckState();
+            storage.Set(id, value);
+        }
 
         [HttpGet]
         public IEnumerable<ValueWithId> GetAllLocalData()

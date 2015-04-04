@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="CoordinatorClient.cs" />
     <Compile Include="ICoordinatorClient.cs" />
+    <Compile Include="InternalClient.cs" />
     <Compile Include="IOperationLogClient.cs" />
     <Compile Include="ISimpleStorageClient.cs" />
     <Compile Include="OperationLogClient.cs" />
