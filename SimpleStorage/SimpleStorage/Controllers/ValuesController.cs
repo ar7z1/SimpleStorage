@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
@@ -18,13 +16,6 @@ namespace SimpleStorage.Controllers
             this.storage = storage;
             this.stateRepository = stateRepository;
             this.configuration = configuration;
-        }
-
-        // GET api/values 
-        public IEnumerable<ValueWithId> Get()
-        {
-            CheckState();
-            return storage.GetAll().ToArray();
         }
 
         private void CheckState()

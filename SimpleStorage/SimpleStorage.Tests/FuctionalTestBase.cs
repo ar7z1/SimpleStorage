@@ -2,16 +2,19 @@ using Domain;
 using NUnit.Framework;
 using SimpleStorage.Infrastructure;
 using SimpleStorage.IoC;
+using StructureMap;
 
 namespace SimpleStorage.Tests
 {
     [TestFixture]
     public abstract class FuctionalTestBase
     {
+        protected Container container;
+
         [SetUp]
         public virtual void SetUp()
         {
-            var container = IoCFactory.GetContainer();
+            container = IoCFactory.GetContainer();
 
             container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
 

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using Client;
 using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
+using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Controllers
 {
@@ -19,33 +18,10 @@ namespace SimpleStorage.Tests.Controllers
         {
             base.SetUp();
             client = new SimpleStorageClient(endpoint);
-        }
 
-        [Test]
-        public void GetAll_NonEmptyStorage_ShouldReturnAll()
-        {
-            const string id = "id";
-            var value = new Value {Content = "content"};
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
-            {
-                client.Put(id, value);
-
-                var actual = GetAll().ToArray();
-
-                Assert.That(actual.ToArray(),
-                    Has.Some.Matches<ValueWithId>(v => v.Id == id && v.Value.Content == value.Content));
-            }
-        }
-
-        private IEnumerable<ValueWithId> GetAll()
-        {
-            var requestUri = endpoint + "api/values/";
-            using (var httpClient = new HttpClient())
-            using (var response = httpClient.GetAsync(requestUri).Result)
-            {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<IEnumerable<ValueWithId>>().Result;
-            }
+            var topology = new Topology(new int[0]);
+            var configuration = new Configuration(topology) {CurrentNodePort = port, OtherShardsPorts = new int[0]};
+            container.Configure(c => c.For<IConfiguration>().Use(configuration));
         }
 
         [Test]
@@ -74,7 +50,7 @@ namespace SimpleStorage.Tests.Controllers
                             httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 
-                    using (var response = httpClient.GetAsync(endpoint + "api/values").Result)
+                    using (var response = httpClient.GetAsync(endpoint + "api/values/id").Result)
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
                 }
             }
@@ -85,6 +61,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
             {
+                client.Put("id", new Value());
                 using (var httpClient = new HttpClient())
                 {
                     using (
@@ -98,7 +75,7 @@ namespace SimpleStorage.Tests.Controllers
                         )
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 
-                    using (var response = httpClient.GetAsync(endpoint + "api/values").Result)
+                    using (var response = httpClient.GetAsync(endpoint + "api/values/id").Result)
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                 }
             }
