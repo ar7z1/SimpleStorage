@@ -90,11 +90,15 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
     <Compile Include="IConfiguration.cs" />
+    <Compile Include="Infrastructure\IMasterConfiguration.cs" />
     <Compile Include="Infrastructure\IOperationLog.cs" />
     <Compile Include="Infrastructure\IStateRepository.cs" />
     <Compile Include="Infrastructure\IStorage.cs" />
     <Compile Include="Infrastructure\ITopology.cs" />
+    <Compile Include="Infrastructure\MasterConfiguration.cs" />
     <Compile Include="Infrastructure\OperationLog.cs" />
+    <Compile Include="Infrastructure\Polling\IOperationLogSynchronizer.cs" />
+    <Compile Include="Infrastructure\Polling\OperationLogSynchronizer.cs" />
     <Compile Include="Infrastructure\State.cs" />
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />
@@ -118,6 +122,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Client\Client.csproj">
+      <Project>{1C20557A-37CF-41ED-82AC-63B14B8E20E7}</Project>
+      <Name>Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{A46FE6BE-06DA-4580-983D-92347EFA8313}</Project>
       <Name>Domain</Name>

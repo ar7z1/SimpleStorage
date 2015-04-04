@@ -21,6 +21,7 @@ namespace SimpleStorage.IoC
             For<IStateRepository>().Singleton();
             For<IOperationLog>().Singleton();
             For<IComparer<Value>>().Use<ValueComparer>().Singleton();
+            For<IMasterConfiguration>().Singleton();
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             storage = new Storage(new OperationLog(), new ValueComparer());
             stateRepository = new StateRepository();
-            sut = new ValuesController(storage, stateRepository, new Configuration());
+            sut = new ValuesController(storage, stateRepository, new Configuration(), new MasterConfiguration(new Topology(Enumerable.Empty<int>())));
         }
 
         [Test]

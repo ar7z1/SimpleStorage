@@ -11,13 +11,15 @@ namespace SimpleStorage.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IStateRepository stateRepository;
+        private readonly IMasterConfiguration masterConfiguration;
         private readonly IStorage storage;
 
-        public ValuesController(IStorage storage, IStateRepository stateRepository, IConfiguration configuration)
+        public ValuesController(IStorage storage, IStateRepository stateRepository, IConfiguration configuration, IMasterConfiguration masterConfiguration)
         {
             this.storage = storage;
             this.stateRepository = stateRepository;
             this.configuration = configuration;
+            this.masterConfiguration = masterConfiguration;
         }
 
         // GET api/values 
@@ -46,6 +48,8 @@ namespace SimpleStorage.Controllers
         // PUT api/values/5
         public void Put(string id, [FromBody] Value value)
         {
+            if (!masterConfiguration.IsMaster)
+                throw new HttpResponseException(HttpStatusCode.NotImplemented);
             CheckState();
             storage.Set(id, value);
         }
