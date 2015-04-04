@@ -17,10 +17,11 @@ namespace SimpleStorage
             {
                 var container = IoCFactory.GetContainer();
 
-                container.Configure(c => c.For<ITopology>().Use(new Topology(options.ReplicasPorts)).Singleton());
+                var topology = new Topology(options.ReplicasPorts);
+                container.Configure(c => c.For<ITopology>().Use(topology).Singleton());
 
                 var currentNodeShardNumber = options.Port%(options.ShardsPorts.Length + 1);
-                var configuration = new Configuration {ShardNumber = currentNodeShardNumber};
+                var configuration = new Configuration(topology) {ShardNumber = currentNodeShardNumber};
                 container.Configure(c => c.For<IConfiguration>().Use(configuration));
 
                 using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
