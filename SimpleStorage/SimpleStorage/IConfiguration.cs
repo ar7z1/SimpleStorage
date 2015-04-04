@@ -4,7 +4,8 @@ namespace SimpleStorage
 {
     public interface IConfiguration
     {
-        int ShardNumber { get; }
+        int CurrentNodePort { get; }
+        int[] OtherShardsPorts { get; }
         bool IsMaster { get; }
         IPEndPoint MasterEndpoint { get; }
     }

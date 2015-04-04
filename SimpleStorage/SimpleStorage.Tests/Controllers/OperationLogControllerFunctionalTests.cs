@@ -3,6 +3,7 @@ using Client;
 using Domain;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
+using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Controllers
 {
@@ -16,6 +17,10 @@ namespace SimpleStorage.Tests.Controllers
         public override void SetUp()
         {
             base.SetUp();
+
+            var topology = new Topology(new int[0]);
+            var configuration = new Configuration(topology) {CurrentNodePort = port, OtherShardsPorts = new int[0]};
+            container.Configure(c => c.For<IConfiguration>().Use(configuration));
 
             storageClient = new SimpleStorageClient(endpoint);
             operationLogClient = new OperationLogClient(endpoint);

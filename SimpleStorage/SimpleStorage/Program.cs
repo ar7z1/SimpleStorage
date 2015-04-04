@@ -22,8 +22,11 @@ namespace SimpleStorage
                 var topology = new Topology(options.ReplicasPorts);
                 container.Configure(c => c.For<ITopology>().Use(topology).Singleton());
 
-                var currentNodeShardNumber = options.Port%(options.ShardsPorts.Length + 1);
-                var configuration = new Configuration(topology) {ShardNumber = currentNodeShardNumber};
+                var configuration = new Configuration(topology)
+                {
+                    CurrentNodePort = options.Port,
+                    OtherShardsPorts = options.ShardsPorts
+                };
                 container.Configure(c => c.For<IConfiguration>().Use(configuration));
 
                 using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
@@ -38,7 +41,7 @@ namespace SimpleStorage
                     CancellationToken cancellationToken = cts.Token;
                     var synchronizationTask = IoCFactory.GetContainer().GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
                     if (options.ShardsPorts.Any())
-                        Console.WriteLine("Shards running on ports {0}", string.Join(", ", options.ReplicasPorts));
+                        Console.WriteLine("Shards running on ports {0}", string.Join(", ", options.ShardsPorts));
 
                     Console.ReadLine();
                     cts.Cancel();
