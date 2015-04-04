@@ -13,13 +13,6 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
     [Ignore]
     public class Task1Tests : FuctionalTestBase
     {
-        private readonly string masterEndpoint = "http://127.0.0.1:16000/";
-        private readonly string slave1Endpoint = "http://127.0.0.1:16001/";
-        private readonly string slave2Endpoint = "http://127.0.0.1:16002/";
-        private SimpleStorageClient masterClient;
-        private SimpleStorageClient slave1Client;
-        private SimpleStorageClient slave2Client;
-
         [SetUp]
         public override void SetUp()
         {
@@ -27,6 +20,82 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
             masterClient = new SimpleStorageClient(masterEndpoint);
             slave1Client = new SimpleStorageClient(slave1Endpoint);
             slave2Client = new SimpleStorageClient(slave2Endpoint);
+            fullTopologyClient = new SimpleStorageClient(masterEndpoint, slave1Endpoint, slave2Endpoint);
+        }
+
+        private readonly string masterEndpoint = "http://127.0.0.1:16000/";
+        private readonly string slave1Endpoint = "http://127.0.0.1:16001/";
+        private readonly string slave2Endpoint = "http://127.0.0.1:16002/";
+        private SimpleStorageClient masterClient;
+        private SimpleStorageClient slave1Client;
+        private SimpleStorageClient slave2Client;
+        private SimpleStorageClient fullTopologyClient;
+
+        private void TestReplicaDown(string replica, string id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (
+                    HttpResponseMessage response =
+                        httpClient.PostAsync(replica + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
+                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+
+                for (int i = 0; i < 100; ++i)
+                {
+                    fullTopologyClient.Get(id);
+                }
+
+                using (
+                    HttpResponseMessage response =
+                        httpClient.PostAsync(replica + "api/admin/start", new ByteArrayContent(new byte[0])).Result
+                    )
+                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+            }
+        }
+
+        private static Constraint CheckHttpException(HttpStatusCode code)
+        {
+            return Is.TypeOf<HttpRequestException>().And.Property("Message").ContainsSubstring(((int) code).ToString());
+        }
+
+        [Test]
+        public void Get_ManyTimes_ShouldWorkWhenReplicasDown()
+        {
+            string id = Guid.NewGuid().ToString();
+            var value = new Value {Content = "content"};
+            fullTopologyClient.Put(id, value);
+
+            for (int i = 0; i < 100; ++i)
+            {
+                fullTopologyClient.Get(id);
+            }
+            TestReplicaDown(slave1Endpoint, id);
+            TestReplicaDown(slave2Endpoint, id);
+            TestReplicaDown(masterEndpoint, id);
+        }
+
+        [Test]
+        public void Put_ManyTimes_ShouldWorkWithoutException()
+        {
+            for (int i = 0; i < 100; ++i)
+            {
+                string id = Guid.NewGuid().ToString();
+                var value = new Value {Content = "content"};
+                fullTopologyClient.Put(id, value);
+            }
+        }
+
+        [Test]
+        public void Put_OnMaster_ShouldAvailableOnSlaves()
+        {
+            string id = Guid.NewGuid().ToString();
+            var value = new Value {Content = "content"};
+            masterClient.Put(id, value);
+            Thread.Sleep(2000);
+            Value value1 = slave1Client.Get(id);
+            Assert.That(value1.Content, Is.EqualTo("content"));
+            Value value2 = slave2Client.Get(id);
+            Assert.That(value2.Content, Is.EqualTo("content"));
         }
 
         [Test]
@@ -37,24 +106,6 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
             Assert.Throws(CheckHttpException(HttpStatusCode.NotImplemented), () => slave1Client.Put(id, value));
             Assert.Throws(CheckHttpException(HttpStatusCode.NotImplemented), () => slave2Client.Put(id, value));
             masterClient.Put(id, value);
-        }
-
-        [Test]
-        public void Put_OnMaster_ShouldAvailableOnSlaves()
-        {
-            string id = Guid.NewGuid().ToString();
-            var value = new Value { Content = "content" };
-            masterClient.Put(id, value);
-            Thread.Sleep(2000);
-            var value1 = slave1Client.Get(id);
-            Assert.That(value1.Content, Is.EqualTo("content"));
-            var value2 = slave2Client.Get(id);
-            Assert.That(value2.Content, Is.EqualTo("content"));
-        }
-
-        private static Constraint CheckHttpException(HttpStatusCode code)
-        {
-            return Is.TypeOf<HttpRequestException>().And.Property("Message").ContainsSubstring(((int)code).ToString());
         }
     }
 }
