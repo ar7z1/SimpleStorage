@@ -9,6 +9,8 @@ using NUnit.Framework.Constraints;
 
 namespace SimpleStorage.Tests.ReplicationAndConsistency
 {
+    [TestFixture]
+    [Ignore]
     public class Task1Tests : FuctionalTestBase
     {
         private readonly string masterEndpoint = "http://127.0.0.1:16000/";
@@ -18,6 +20,7 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
         private SimpleStorageClient slave1Client;
         private SimpleStorageClient slave2Client;
 
+        [SetUp]
         public override void SetUp()
         {
             base.SetUp();
@@ -51,7 +54,7 @@ namespace SimpleStorage.Tests.ReplicationAndConsistency
 
         private static Constraint CheckHttpException(HttpStatusCode code)
         {
-            return Is.TypeOf<HttpRequestException>().And.Property("Response").Property("StatusCode").EqualTo(code);
+            return Is.TypeOf<HttpRequestException>().And.Property("Message").ContainsSubstring(((int)code).ToString());
         }
     }
 }
