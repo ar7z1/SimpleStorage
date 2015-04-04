@@ -90,6 +90,7 @@
     <Compile Include="ReplicationAndConsistency\Task1Tests.cs" />
     <Compile Include="Sharding\Task1Tests.cs" />
     <Compile Include="Sharding\Task2Tests.cs" />
+    <Compile Include="Sharding\Task3Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

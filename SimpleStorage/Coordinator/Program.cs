@@ -1,6 +1,7 @@
 ﻿using System;
 using CommandLine;
 using CommandLine.Text;
+using Coordinator.IoC;
 using Microsoft.Owin.Hosting;
 
 namespace Coordinator
@@ -12,6 +13,8 @@ namespace Coordinator
             var options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
+                var configuration = new Configuration {ShardCount = options.ShardCount};
+                IoCFactory.GetContainer().Configure(c => c.For<IConfiguration>().Use(configuration));
                 using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
                 {
                     Console.WriteLine("Server running on port {0}", options.Port);
@@ -24,6 +27,9 @@ namespace Coordinator
         {
             [Option('p', Required = true, HelpText = "Port.")]
             public int Port { get; set; }
+
+            [Option('c', Required = true, HelpText = "Shard count.")]
+            public int ShardCount { get; set; }
 
             [HelpOption]
             public string GetUsage()
