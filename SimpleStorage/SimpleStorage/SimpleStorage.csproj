@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ConsoleExceptionLogger.cs" />
     <Compile Include="Controllers\LogMiddleware.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
