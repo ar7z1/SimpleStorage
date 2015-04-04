@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using CommandLine;
 using CommandLine.Text;
 using Microsoft.Owin.Hosting;
 using SimpleStorage.Infrastructure;
+using SimpleStorage.Infrastructure.Replication;
 using SimpleStorage.IoC;
 
 namespace SimpleStorage
@@ -30,7 +32,9 @@ namespace SimpleStorage
                 using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
                 {
                     Console.WriteLine("Server running on port {0}", options.Port);
-
+                    var cts = new CancellationTokenSource();
+                    CancellationToken cancellationToken = cts.Token;
+                    var synchronizationTask = IoCFactory.GetContainer().GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
                     if (options.ReplicasPorts.Any())
                         Console.WriteLine("Replicas running on ports {0}", string.Join(", ", options.ReplicasPorts));
 
@@ -38,6 +42,8 @@ namespace SimpleStorage
                         Console.WriteLine("Shards running on ports {0}", string.Join(", ", options.ShardsPorts));
 
                     Console.ReadLine();
+                    cts.Cancel();
+                    synchronizationTask.Wait(cancellationToken);
                 }
             }
         }

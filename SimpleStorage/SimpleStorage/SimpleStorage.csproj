@@ -93,6 +93,8 @@
     <Compile Include="Infrastructure\IStorage.cs" />
     <Compile Include="Infrastructure\ITopology.cs" />
     <Compile Include="Infrastructure\OperationLog.cs" />
+    <Compile Include="Infrastructure\Replication\IOperationLogSynchronizer.cs" />
+    <Compile Include="Infrastructure\Replication\OperationLogSynchronizer.cs" />
     <Compile Include="Infrastructure\State.cs" />
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />
