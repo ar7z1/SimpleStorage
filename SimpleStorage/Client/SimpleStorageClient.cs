@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Domain;
@@ -8,7 +7,8 @@ namespace Client
 {
     public class SimpleStorageClient : ISimpleStorageClient
     {
-        private readonly IEnumerable<string> endpoints;
+        private readonly string[] endpoints;
+        private readonly int attempts = 5;
 
         public SimpleStorageClient(params string[] endpoints)
         {
@@ -19,21 +19,41 @@ namespace Client
 
         public void Put(string id, Value value)
         {
-            var putUri = endpoints.First() + "api/values/" + id;
-            using (var client = new HttpClient())
-            using (var response = client.PutAsJsonAsync(putUri, value).Result)
-                response.EnsureSuccessStatusCode();
+            var rnd = new Random();
+            for (var i = 0; i < attempts; ++i)
+            {
+                try
+                {
+                    var endpoint = endpoints[rnd.Next(endpoints.Count())];
+                    var putUri = endpoint + "api/values/" + id;
+                    using (var client = new HttpClient())
+                    using (var response = client.PutAsJsonAsync(putUri, value).Result)
+                        response.EnsureSuccessStatusCode();
+                    return;
+                } catch {}
+            }
+            throw new HttpRequestException("All attempts failed");
         }
 
         public Value Get(string id)
         {
-            var requestUri = endpoints.First() + "api/values/" + id;
-            using (var client = new HttpClient())
-            using (var response = client.GetAsync(requestUri).Result)
+            var rnd = new Random();
+            for (var i = 0; i < attempts; ++i)
             {
-                response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<Value>().Result;
+                try
+                {
+                    var endpoint = endpoints[rnd.Next(endpoints.Count())];
+                    var requestUri = endpoint + "api/values/" + id;
+                    using (var client = new HttpClient())
+                    using (var response = client.GetAsync(requestUri).Result)
+                    {
+                        response.EnsureSuccessStatusCode();
+                        return response.Content.ReadAsAsync<Value>().Result;
+                    }
+                }
+                catch { }
             }
+            throw new HttpRequestException("All attempts failed");
         }
     }
 }
