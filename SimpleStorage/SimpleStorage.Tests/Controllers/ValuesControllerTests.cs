@@ -1,10 +1,9 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Web.Http;
 using Domain;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoRhinoMock;
-using Rhino.Mocks;
+using NUnit.Framework.Constraints;
 using SimpleStorage.Controllers;
 using SimpleStorage.Infrastructure;
 
@@ -13,49 +12,89 @@ namespace SimpleStorage.Tests.Controllers
     [TestFixture]
     public class ValuesControllerTests
     {
-        private Fixture fixture;
+        private StateRepository stateRepository;
         private IStorage storage;
         private ValuesController sut;
 
         [SetUp]
         public void SetUp()
         {
-            fixture = new Fixture();
-            fixture.Customize(new AutoRhinoMockCustomization());
-            storage = fixture.Freeze<IStorage>();
-            sut = fixture.Build<ValuesController>().OmitAutoProperties().Create();
+            storage = new Storage(new OperationLog(), new ValueComparer());
+            stateRepository = new StateRepository();
+            sut = new ValuesController(storage, stateRepository);
         }
 
         [Test]
-        public void GetAll_Always_ShouldReturnValuesFromRepository()
+        public void GetAll_Stopped_ShouldThrow()
         {
-            var result = fixture.CreateMany<ValueWithId>();
-            storage.Stub(s => s.GetAll()).Return(result);
+            storage.Set("id", new Value());
+            stateRepository.SetState(State.Stopped);
+
+            Assert.Throws(CheckHttpException(HttpStatusCode.InternalServerError), () => sut.Get());
+        }
+
+        [Test]
+        public void GetAll_Started_ShouldReturnValuesFromRepository()
+        {
+            storage.Set("id", new Value());
 
             var actual = sut.Get().ToArray();
 
-            Assert.That(actual, Is.EqualTo(result));
+            Assert.That(actual.Length, Is.EqualTo(1));
+            Assert.That(actual[0].Id, Is.EqualTo("id"));
         }
 
         [Test]
-        public void Get_KnownId_ShouldReturnValueFromRepository()
+        public void Get_Stopped_ShouldThrow()
         {
-            var id = fixture.Create<string>();
-            var result = fixture.Create<Value>();
-            storage.Stub(s => s.Get(id)).Return(result);
+            const string id = "id";
+            storage.Set("id", new Value());
+            stateRepository.SetState(State.Stopped);
+
+            Assert.Throws(CheckHttpException(HttpStatusCode.InternalServerError), () => sut.Get(id));
+        }
+
+        private static EqualConstraint CheckHttpException(HttpStatusCode code)
+        {
+            return Is.TypeOf<HttpResponseException>().And.Property("Response").Property("StatusCode").EqualTo(code);
+        }
+
+        [Test]
+        public void Get_StartedAndKnownId_ShouldReturnValueFromRepository()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content"};
+            storage.Set("id", value);
 
             var actual = sut.Get(id);
 
-            Assert.That(actual, Is.EqualTo(result));
+            Assert.That(actual, Is.EqualTo(value));
         }
 
         [Test]
-        public void Get_UnknownId_ShouldThrow()
+        public void Get_StartedAndUnknownId_ShouldThrow()
         {
-            var id = fixture.Create<string>();
-            storage.Stub(s => s.Get(id)).Return(null);
+            Assert.Throws(CheckHttpException(HttpStatusCode.NotFound), () => sut.Get("unknownId"));
+        }
 
-            Assert.Throws<HttpResponseException>(() => sut.Get(id));
+        [Test]
+        public void Put_Stopped_ShouldThrow()
+        {
+            stateRepository.SetState(State.Stopped);
+
+            Assert.Throws(CheckHttpException(HttpStatusCode.InternalServerError), () => sut.Put("id", new Value()));
+        }
+
+        [Test]
+        public void Put_Started_ShouldSaveToStorage()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content"};
+
+            sut.Put(id, value);
+
+            var actual = storage.Get(id);
+            Assert.That(actual, Is.EqualTo(value));
         }
     }
 }

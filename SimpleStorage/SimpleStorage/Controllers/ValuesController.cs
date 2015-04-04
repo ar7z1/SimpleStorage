@@ -9,8 +9,8 @@ namespace SimpleStorage.Controllers
 {
     public class ValuesController : ApiController
     {
-        private readonly IStorage storage;
         private readonly IStateRepository stateRepository;
+        private readonly IStorage storage;
 
         public ValuesController(IStorage storage, IStateRepository stateRepository)
         {
@@ -35,7 +35,7 @@ namespace SimpleStorage.Controllers
         public Value Get(string id)
         {
             CheckState();
-            Value result = storage.Get(id);
+            var result = storage.Get(id);
             if (result == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             return result;
