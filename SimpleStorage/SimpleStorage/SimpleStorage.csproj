@@ -97,7 +97,7 @@
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />
     <Compile Include="Infrastructure\Topology.cs" />
-    <Compile Include="IoC\ControllerRegistry.cs" />
+    <Compile Include="IoC\SimpleStorageRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
     <Compile Include="IoC\IoCFactory.cs" />
     <Compile Include="Program.cs" />

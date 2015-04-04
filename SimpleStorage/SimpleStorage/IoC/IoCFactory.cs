@@ -13,7 +13,7 @@ namespace SimpleStorage.IoC
             if (container == null)
                 lock (@lock)
                     if (container == null)
-                        container = new Container(new ControllerRegistry());
+                        container = new Container(new SimpleStorageRegistry());
 
             return container;
         }

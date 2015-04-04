@@ -1,13 +1,15 @@
+using System.Collections.Generic;
 using System.Web.Http.Controllers;
+using Domain;
 using SimpleStorage.Infrastructure;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
 
 namespace SimpleStorage.IoC
 {
-    public class ControllerRegistry : Registry
+    public class SimpleStorageRegistry : Registry
     {
-        public ControllerRegistry()
+        public SimpleStorageRegistry()
         {
             Scan(p =>
             {
@@ -18,6 +20,7 @@ namespace SimpleStorage.IoC
             For<IStorage>().Singleton();
             For<IStateRepository>().Singleton();
             For<IOperationLog>().Singleton();
+            For<IComparer<Value>>().Use<ValueComparer>().Singleton();
         }
     }
 }
