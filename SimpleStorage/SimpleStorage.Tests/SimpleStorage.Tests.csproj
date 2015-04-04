@@ -88,6 +88,8 @@
     <Compile Include="Infrastructure\StorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReplicationAndConsistency\Task1Tests.cs" />
+    <Compile Include="Sharding\Task1Tests.cs" />
+    <Compile Include="Sharding\Task2Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
