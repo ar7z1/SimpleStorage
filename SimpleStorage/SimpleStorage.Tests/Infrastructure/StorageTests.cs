@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Domain;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoRhinoMock;
 using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Infrastructure
@@ -11,16 +8,14 @@ namespace SimpleStorage.Tests.Infrastructure
     [TestFixture]
     public class StorageTests
     {
-        private Fixture fixture;
+        private OperationLog operationLog;
         private Storage sut;
 
         [SetUp]
         public void SetUp()
         {
-            fixture = new Fixture();
-            fixture.Customize(new AutoRhinoMockCustomization());
-            fixture.Inject<IComparer<Value>>(new ValueComparer());
-            sut = fixture.Create<Storage>();
+            operationLog = new OperationLog();
+            sut = new Storage(operationLog, new ValueComparer());
         }
 
         [Test]
@@ -33,11 +28,11 @@ namespace SimpleStorage.Tests.Infrastructure
         [Test]
         public void GetAll_NonEmptyStorage_ShouldReturnAllValues()
         {
-            var id1 = fixture.Create<string>();
-            var value1 = fixture.Create<Value>();
+            const string id1 = "id1";
+            var value1 = new Value {Content = "content1"};
             sut.Set(id1, value1);
-            var id2 = fixture.Create<string>();
-            var value2 = fixture.Create<Value>();
+            const string id2 = "id2";
+            var value2 = new Value {Content = "content2"};
             sut.Set(id2, value2);
 
             var actual = sut.GetAll().ToArray();
@@ -49,8 +44,8 @@ namespace SimpleStorage.Tests.Infrastructure
         [Test]
         public void Get_KnownId_ShouldReturnValue()
         {
-            var id = fixture.Create<string>();
-            var value = fixture.Create<Value>();
+            const string id = "id";
+            var value = new Value {Content = "content"};
             sut.Set(id, value);
 
             var actual = sut.Get(id);
@@ -61,23 +56,126 @@ namespace SimpleStorage.Tests.Infrastructure
         [Test]
         public void Get_UnknownId_ShouldReturnNull()
         {
-            var actual = sut.Get(fixture.Create<string>());
+            var actual = sut.Get("unknownId");
             Assert.That(actual, Is.Null);
         }
 
         [Test]
-        public void Update_Always_ShouldOverwrite()
+        public void Set_NonExistingId_ShouldCreate()
         {
-            var id = fixture.Create<string>();
-            var oldValue = fixture.Build<Value>().With(v => v.Revision, 0).Create();
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 0};
+
+            sut.Set(id, value);
+
+            var actual = sut.Get(id);
+            Assert.That(actual, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Set_NonExistingId_ShouldWriteToOperationLog()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 0};
+
+            sut.Set(id, value);
+
+            var actual = operationLog.Read(0, 1).Single();
+            Assert.That(actual.Id, Is.EqualTo(id));
+            Assert.That(actual.Value, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Set_NonExistingId_ShouldReturnTrue()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 0};
+
+            var actual = sut.Set(id, value);
+
+            Assert.That(actual, Is.True);
+        }
+
+        [Test]
+        public void Set_StorageContainsNewerValue_ShouldNotOverwrite()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 2};
+            sut.Set(id, value);
+            var anotherValue = new Value {Content = "anotherContent", Revision = 1};
+
+            sut.Set(id, anotherValue);
+
+            var actual = sut.Get(id);
+            Assert.That(actual, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Set_StorageContainsNewerValue_ShouldNotWriteToOperationLog()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 2};
+            sut.Set(id, value);
+            var anotherValue = new Value {Content = "anotherContent", Revision = 1};
+
+            sut.Set(id, anotherValue);
+
+            var actual = operationLog.Read(0, 2).Last();
+            Assert.That(actual.Value, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Set_StorageContainsNewerValue_ShouldReturnFalse()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 2};
+            sut.Set(id, value);
+            var anotherValue = new Value {Content = "anotherContent", Revision = 1};
+
+            var actual = sut.Set(id, anotherValue);
+
+            Assert.That(actual, Is.False);
+        }
+
+        [Test]
+        public void Set_StorageContainsOlderValue_ShouldOverwrite()
+        {
+            const string id = "id";
+            var oldValue = new Value {Content = "oldContent", Revision = 0};
             sut.Set(id, oldValue);
-            var newContent = fixture.Create<string>();
-            var newValue = fixture.Build<Value>().With(v => v.Content, newContent).With(v => v.Revision, 1).Create();
+            var newValue = new Value {Content = "newContent", Revision = 1};
 
             sut.Set(id, newValue);
 
             var actual = sut.Get(id);
             Assert.That(actual, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void Set_StorageContainsOlderValue_ShouldWriteToOperationLog()
+        {
+            const string id = "id";
+            var oldValue = new Value {Content = "oldContent", Revision = 0};
+            sut.Set(id, oldValue);
+            var newValue = new Value {Content = "newContent", Revision = 1};
+
+            sut.Set(id, newValue);
+
+            var actual = operationLog.Read(0, 2).Last();
+            Assert.That(actual.Value, Is.EqualTo(newValue));
+        }
+
+        [Test]
+        public void Set_StorageContainsOlderValue_ShouldReturnTrue()
+        {
+            const string id = "id";
+            var oldValue = new Value {Content = "oldContent", Revision = 0};
+            sut.Set(id, oldValue);
+            var newValue = new Value {Content = "newContent", Revision = 1};
+
+            var actual = sut.Set(id, newValue);
+
+            Assert.That(actual, Is.True);
         }
     }
 }
