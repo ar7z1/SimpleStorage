@@ -11,3 +11,4 @@ safe: true
 lsi: false
 exclude: [Gemfile]
 timezone: Asia/Yekaterinburg
+markdown: kramdown
