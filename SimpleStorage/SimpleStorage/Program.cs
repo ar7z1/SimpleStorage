@@ -35,15 +35,18 @@ namespace SimpleStorage
                     var cts = new CancellationTokenSource();
                     CancellationToken cancellationToken = cts.Token;
                     var synchronizationTask = IoCFactory.GetContainer().GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
+                    Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs evtArgs) {
+                        cts.Cancel();
+                        synchronizationTask.Wait(cancellationToken);
+                    };
                     if (options.ReplicasPorts.Any())
                         Console.WriteLine("Replicas running on ports {0}", string.Join(", ", options.ReplicasPorts));
 
                     if (options.ShardsPorts.Any())
                         Console.WriteLine("Shards running on ports {0}", string.Join(", ", options.ShardsPorts));
-
-                    Console.ReadLine();
-                    cts.Cancel();
-                    synchronizationTask.Wait(cancellationToken);
+                    while (true) {
+                        Console.ReadLine();
+                    }
                 }
             }
         }
