@@ -6,21 +6,22 @@ using Client;
 using Domain;
 using NUnit.Framework;
 
-namespace SimpleStorage.Tests.Sharding
+namespace SimpleStorage.Tests
 {
     [TestFixture]
+    [Ignore]
     public class ShardingTests
     {
         private const int port1 = 15000;
         private const int port2 = 15001;
         private const int port3 = 15002;
         private readonly string[] endpoints = {endpoint1, endpoint2, endpoint3};
-        private SimpleStorageClient client;
+        private SimpleStorageClient simpleStorageClient;
 
         [SetUp]
         public void SetUp()
         {
-            client = new SimpleStorageClient(endpoints);
+            simpleStorageClient = new SimpleStorageClient(endpoints);
         }
 
         [Test]
@@ -31,7 +32,7 @@ namespace SimpleStorage.Tests.Sharding
             using (SimpleStorageTestHelpers.StartService(port3))
             {
                 for (var i = 0; i < 100; i++)
-                    client.Put(Guid.NewGuid().ToString(), new Value {Content = "content"});
+                    simpleStorageClient.Put(Guid.NewGuid().ToString(), new Value {Content = "content"});
 
                 Assert.That(GetAll(endpoint1).ToArray(), Has.Length.LessThan(100));
                 Assert.That(GetAll(endpoint2).ToArray(), Has.Length.LessThan(100));
@@ -47,7 +48,7 @@ namespace SimpleStorage.Tests.Sharding
             using (SimpleStorageTestHelpers.StartService(port3))
             {
                 for (var i = 0; i < 100; i++)
-                    client.Put(Guid.NewGuid().ToString(), new Value {Content = "content"});
+                    simpleStorageClient.Put(Guid.NewGuid().ToString(), new Value {Content = "content"});
 
                 Assert.That(GetAll(endpoint1).ToArray(), Has.Length.GreaterThan(0));
                 Assert.That(GetAll(endpoint2).ToArray(), Has.Length.GreaterThan(0));
@@ -68,12 +69,12 @@ namespace SimpleStorage.Tests.Sharding
                     var id = Guid.NewGuid().ToString();
                     var value = new Value {Content = "content"};
                     items.Add(new KeyValuePair<string, Value>(id, value));
-                    client.Put(id, value);
+                    simpleStorageClient.Put(id, value);
                 }
 
                 foreach (var item in items)
                 {
-                    var actual = client.Get(item.Key);
+                    var actual = simpleStorageClient.Get(item.Key);
                     Assert.That(actual.Content, Is.EqualTo(item.Value.Content));
                     Assert.That(actual.IsDeleted, Is.EqualTo(item.Value.IsDeleted));
                     Assert.That(actual.Revision, Is.EqualTo(item.Value.Revision));
