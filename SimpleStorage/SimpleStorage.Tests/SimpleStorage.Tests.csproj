@@ -93,6 +93,7 @@
     <Compile Include="Sharding\Task1Tests.cs" />
     <Compile Include="Sharding\Task2Tests.cs" />
     <Compile Include="Sharding\Task3Tests.cs" />
+    <Compile Include="SimpleStorageTestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

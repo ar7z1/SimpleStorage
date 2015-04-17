@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using CommandLine;
 using CommandLine.Text;
-using Microsoft.Owin.Hosting;
 using SimpleStorage.Infrastructure;
 using SimpleStorage.Infrastructure.Replication;
 using SimpleStorage.IoC;
@@ -17,7 +16,7 @@ namespace SimpleStorage
             var options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
-                var container = IoCFactory.GetContainer();
+                var container = IoCFactory.NewContainer();
 
                 var topology = new Topology(options.ReplicasPorts);
                 container.Configure(c => c.For<ITopology>().Use(topology).Singleton());
@@ -28,14 +27,14 @@ namespace SimpleStorage
                     OtherShardsPorts = options.ShardsPorts
                 };
                 container.Configure(c => c.For<IConfiguration>().Use(configuration));
-
-                using (WebApp.Start<Startup>(string.Format("http://+:{0}/", options.Port)))
+                using (SimpleStorageService.Start(string.Format("http://+:{0}/", options.Port), container))
                 {
                     Console.WriteLine("Server running on port {0}", options.Port);
                     var cts = new CancellationTokenSource();
                     CancellationToken cancellationToken = cts.Token;
-                    var synchronizationTask = IoCFactory.GetContainer().GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
-                    Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs evtArgs) {
+                    var synchronizationTask = container.GetInstance<IOperationLogSynchronizer>().Synchronize(cancellationToken);
+                    Console.CancelKeyPress += delegate
+                    {
                         cts.Cancel();
                         synchronizationTask.Wait(cancellationToken);
                     };

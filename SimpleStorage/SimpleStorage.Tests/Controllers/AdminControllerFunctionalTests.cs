@@ -2,26 +2,21 @@
 using System.Net.Http;
 using Client;
 using Domain;
-using Microsoft.Owin.Hosting;
 using NUnit.Framework;
-using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Controllers
 {
-    public class AdminControllerFunctionalTests : FuctionalTestBase
+    [TestFixture]
+    public class AdminControllerFunctionalTests
     {
         private const int port = 15000;
         private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
         private InternalClient client;
 
-        public override void SetUp()
+        [SetUp]
+        public void SetUp()
         {
-            base.SetUp();
             client = new InternalClient(endpoint);
-
-            var topology = new Topology(new int[0]);
-            var configuration = new Configuration(topology) {CurrentNodePort = port, OtherShardsPorts = new int[0]};
-            container.Configure(c => c.For<IConfiguration>().Use(configuration));
         }
 
         [Test]
@@ -30,7 +25,7 @@ namespace SimpleStorage.Tests.Controllers
             const string id = "id";
             var value = new Value {Content = "content"};
 
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             {
                 client.Put(id, value);
                 var actual = client.Get(id);
@@ -41,25 +36,23 @@ namespace SimpleStorage.Tests.Controllers
         [Test]
         public void Get_StopInstance_ShouldThrow()
         {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
+            using (var httpClient = new HttpClient())
             {
-                using (var httpClient = new HttpClient())
-                {
-                    using (
-                        var response =
-                            httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+                using (
+                    var response =
+                        httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
+                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 
-                    using (var response = httpClient.GetAsync(endpoint + "api/admin/internalGet/id").Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
-                }
+                using (var response = httpClient.GetAsync(endpoint + "api/admin/internalGet/id").Result)
+                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
             }
         }
 
         [Test]
         public void Get_StartInstance_ShouldNotThrow()
         {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             {
                 client.Put("id", new Value());
                 using (var httpClient = new HttpClient())
@@ -86,7 +79,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             var requestUri = endpoint + "api/admin/internalGet/unknownId";
 
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             using (var httpClient = new HttpClient())
             using (var response = httpClient.GetAsync(requestUri).Result)
                 Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));

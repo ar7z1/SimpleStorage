@@ -104,7 +104,8 @@
     <Compile Include="IoC\IoCFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Startup.cs" />
+    <Compile Include="SimpleStorageService.cs" />
+    <Compile Include="ApplicationConfigurator.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
   </ItemGroup>
   <ItemGroup>
