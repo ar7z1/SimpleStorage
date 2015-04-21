@@ -8,7 +8,8 @@ namespace Client
 {
     public class SimpleStorageClient : ISimpleStorageClient
     {
-        private readonly IEnumerable<string> endpoints;
+        private readonly string[] endpoints;
+		private Random random = new Random();
 
         public SimpleStorageClient(params string[] endpoints)
         {
@@ -19,7 +20,7 @@ namespace Client
 
         public void Put(string id, Value value)
         {
-            var putUri = endpoints.First() + "api/values/" + id;
+            var putUri = ChooseEndpoint(id) + "api/values/" + id;
             using (var client = new HttpClient())
             using (var response = client.PutAsJsonAsync(putUri, value).Result)
                 response.EnsureSuccessStatusCode();
@@ -27,7 +28,7 @@ namespace Client
 
         public Value Get(string id)
         {
-            var requestUri = endpoints.First() + "api/values/" + id;
+            var requestUri = ChooseEndpoint(id) + "api/values/" + id;
             using (var client = new HttpClient())
             using (var response = client.GetAsync(requestUri).Result)
             {
@@ -35,5 +36,11 @@ namespace Client
                 return response.Content.ReadAsAsync<Value>().Result;
             }
         }
+
+	    private string ChooseEndpoint(string id)
+	    {
+		    var index = Math.Abs(id.GetHashCode())%endpoints.Length;
+		    return endpoints[index];
+	    }
     }
 }
