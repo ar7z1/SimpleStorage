@@ -1,27 +1,21 @@
 ﻿using System.Linq;
 using Client;
 using Domain;
-using Microsoft.Owin.Hosting;
 using NUnit.Framework;
-using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage.Tests.Controllers
 {
-    public class OperationLogControllerFunctionalTests : FuctionalTestBase
+    [TestFixture]
+    public class OperationLogControllerFunctionalTests
     {
         private const int port = 15000;
         private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
         private OperationLogClient operationLogClient;
         private SimpleStorageClient storageClient;
 
-        public override void SetUp()
+        [SetUp]
+        public void SetUp()
         {
-            base.SetUp();
-
-            var topology = new Topology(new int[0]);
-            var configuration = new Configuration(topology) {CurrentNodePort = port, OtherShardsPorts = new int[0]};
-            container.Configure(c => c.For<IConfiguration>().Use(configuration));
-
             storageClient = new SimpleStorageClient(endpoint);
             operationLogClient = new OperationLogClient(endpoint);
         }
@@ -31,7 +25,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             const string id = "id";
             var version1 = new Value {Content = "content", IsDeleted = false, Revision = 0};
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             {
                 storageClient.Put(id, version1);
                 var version2 = new Value {IsDeleted = true, Revision = 1, Content = "anotherContent"};
@@ -51,7 +45,7 @@ namespace SimpleStorage.Tests.Controllers
         [Test]
         public void Read_WithSeek_ShouldSkip()
         {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             {
                 storageClient.Put("id1", new Value {Content = "1"});
                 storageClient.Put("id2", new Value {Content = "2"});
@@ -66,7 +60,7 @@ namespace SimpleStorage.Tests.Controllers
         [Test]
         public void Read_BigPosition_ShouldReturnEmpty()
         {
-            using (WebApp.Start<Startup>(string.Format("http://+:{0}/", port)))
+            using (SimpleStorageTestHelpers.StartService(port))
             {
                 var actual = operationLogClient.Read(1000, 1).ToArray();
                 Assert.That(actual.Length, Is.EqualTo(0));

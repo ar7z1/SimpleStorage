@@ -14,7 +14,7 @@ namespace SimpleStorage.Tests
         [SetUp]
         public virtual void SetUp()
         {
-            container = IoCFactory.GetContainer();
+            container = IoCFactory.NewContainer();
 
             container.Configure(c => c.For<IStateRepository>().Use(new StateRepository()));
 
