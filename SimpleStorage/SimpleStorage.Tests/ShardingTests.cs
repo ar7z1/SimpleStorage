@@ -9,7 +9,6 @@ using NUnit.Framework;
 namespace SimpleStorage.Tests
 {
     [TestFixture]
-    [Ignore]
     public class ShardingTests
     {
         private const int port1 = 15000;
