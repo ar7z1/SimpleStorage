@@ -18,16 +18,10 @@ namespace SimpleStorage.Controllers
             this.configuration = configuration;
         }
 
-        private void CheckState()
-        {
-            if (stateRepository.GetState() != State.Started)
-                throw new HttpResponseException(HttpStatusCode.InternalServerError);
-        }
-
         // GET api/values/5 
         public Value Get(string id)
         {
-            CheckState();
+            stateRepository.ThrowIfNotStarted();
             var result = storage.Get(id);
             if (result == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
@@ -37,7 +31,7 @@ namespace SimpleStorage.Controllers
         // PUT api/values/5
         public void Put(string id, [FromBody] Value value)
         {
-            CheckState();
+            stateRepository.ThrowIfNotStarted();
             storage.Set(id, value);
         }
     }

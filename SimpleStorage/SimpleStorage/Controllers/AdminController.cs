@@ -39,17 +39,11 @@ namespace SimpleStorage.Controllers
             storage.RemoveAll();
         }
 
-        private void CheckState()
-        {
-            if (stateRepository.GetState() != State.Started)
-                throw new HttpResponseException(HttpStatusCode.InternalServerError);
-        }
-
         // GET api/values/5 
         [HttpGet]
         public Value InternalGet(string id)
         {
-            CheckState();
+            stateRepository.ThrowIfNotStarted();
             var result = storage.Get(id);
             if (result == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
@@ -60,7 +54,7 @@ namespace SimpleStorage.Controllers
         [HttpPut]
         public void InternalPut(string id, [FromBody] Value value)
         {
-            CheckState();
+            stateRepository.ThrowIfNotStarted();
             storage.Set(id, value);
         }
 
@@ -69,6 +63,5 @@ namespace SimpleStorage.Controllers
         {
             return storage.GetAll().ToArray();
         }
-
     }
 }

@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ControllerHelpers.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="Infrastructure\IOperationLog.cs" />

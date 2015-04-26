@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
@@ -20,14 +19,8 @@ namespace SimpleStorage.Controllers
         // GET api/operations
         public IEnumerable<Operation> Get(int position, int count)
         {
-            CheckState();
+            stateRepository.ThrowIfNotStarted();
             return operationLog.Read(position, count);
-        }
-
-        private void CheckState()
-        {
-            if (stateRepository.GetState() != State.Started)
-                throw new HttpResponseException(HttpStatusCode.InternalServerError);
         }
     }
 }
