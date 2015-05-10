@@ -75,14 +75,13 @@
     <Compile Include="Controllers\AdminControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerTests.cs" />
-    <Compile Include="FuctionalTestBase.cs" />
     <Compile Include="Infrastructure\StorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReplicationAndConsistency\Task2Tests.cs" />
-    <Compile Include="ReplicationAndConsistency\Task1Tests.cs" />
     <Compile Include="ShardingTests.cs" />
     <Compile Include="SimpleStorageTestHelpers.cs" />
     <Compile Include="Configuration\SimpleStorageConfigurationSectionTests.cs" />
+    <Compile Include="Configuration\StubServerConfiguration.cs" />
+    <Compile Include="Configuration\StubShardsConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

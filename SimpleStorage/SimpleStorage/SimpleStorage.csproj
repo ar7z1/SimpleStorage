@@ -39,9 +39,6 @@
     <StartupObject>SimpleStorage.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -81,18 +78,14 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ControllerHelpers.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
-    <Compile Include="IConfiguration.cs" />
     <Compile Include="Infrastructure\IOperationLog.cs" />
     <Compile Include="Infrastructure\IStateRepository.cs" />
     <Compile Include="Infrastructure\IStorage.cs" />
     <Compile Include="Infrastructure\ITopology.cs" />
     <Compile Include="Infrastructure\OperationLog.cs" />
-    <Compile Include="Infrastructure\Replication\IOperationLogSynchronizer.cs" />
-    <Compile Include="Infrastructure\Replication\OperationLogSynchronizer.cs" />
     <Compile Include="Infrastructure\State.cs" />
     <Compile Include="Infrastructure\StateRepository.cs" />
     <Compile Include="Infrastructure\Storage.cs" />
-    <Compile Include="Infrastructure\Topology.cs" />
     <Compile Include="IoC\SimpleStorageRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
     <Compile Include="Program.cs" />
@@ -100,8 +93,6 @@
     <Compile Include="SimpleStorageService.cs" />
     <Compile Include="ApplicationConfigurator.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
-    <Compile Include="Configuration\ServerConfiguration.cs" />
-    <Compile Include="OldConfiguration.cs" />
     <Compile Include="Configuration\ShardsConfiguration.cs" />
     <Compile Include="Configuration\ShardConfiguration.cs" />
     <Compile Include="Configuration\SimpleStorageConfigurationSection.cs" />
@@ -111,15 +102,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="runAll.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="runAllShards.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="runMasterSlave.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Client\Client.csproj">

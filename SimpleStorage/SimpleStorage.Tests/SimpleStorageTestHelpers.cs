@@ -2,6 +2,8 @@ using System;
 using SimpleStorage.Infrastructure;
 using SimpleStorage.IoC;
 using StructureMap;
+using Configuration;
+using System.Net;
 
 namespace SimpleStorage.Tests
 {
@@ -10,13 +12,11 @@ namespace SimpleStorage.Tests
 		public static IDisposable StartService(int servicePort)
 		{
 			var container = new Container(new SimpleStorageRegistry());
-			var topology = new Topology(new int[0]);
-			var configuration = new OldConfiguration(topology) {
-				CurrentNodePort = servicePort
-			};
-			container.Configure(c => c.For<IConfiguration>().Use(configuration));
+			var serverConfig = new StubServerConfiguration(){ Port = servicePort };
+			var shardsConfig = new StubShardsConfiguration(){ Shards = new[]{ new IPEndPoint(IPAddress.Loopback, servicePort) } };
+			container.Configure(c => c.For<SimpleStorage.Configuration.IServerConfiguration>().Use(serverConfig));
+			container.Configure(c => c.For<SimpleStorage.Configuration.IShardsConfiguration>().Use(shardsConfig));
 			return SimpleStorageService.Start(string.Format("http://+:{0}/", servicePort), container);
 		}
-
 	}
 }

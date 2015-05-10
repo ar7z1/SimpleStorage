@@ -5,6 +5,7 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using SimpleStorage.Controllers;
 using SimpleStorage.Infrastructure;
+using Configuration;
 
 namespace SimpleStorage.Tests.Controllers
 {
@@ -20,9 +21,7 @@ namespace SimpleStorage.Tests.Controllers
 		{
 			storage = new Storage(new OperationLog(), new ValueComparer());
 			stateRepository = new StateRepository();
-			var topology = new Topology(new int[0]);
-			var configuration = new OldConfiguration(topology) { CurrentNodePort = 15000 };
-			sut = new ValuesController(storage, stateRepository, configuration);
+			sut = new ValuesController(storage, stateRepository, new StubServerConfiguration(), new StubShardsConfiguration());
 		}
 
 		[Test]
