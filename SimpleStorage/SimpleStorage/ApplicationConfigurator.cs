@@ -19,8 +19,9 @@ namespace SimpleStorage
         public void Configure(IAppBuilder appBuilder)
         {
             var config = new HttpConfiguration {DependencyResolver = new DependencyResolver(container)};
-            config.Routes.MapHttpRoute("AdminApi", "api/admin/{action}/{id}",
-                new {controller = "Admin", id = RouteParameter.Optional});
+//            config.Routes.MapHttpRoute("LocalStorageApi", "api/localStorage/{action}/{id}",
+//                new {controller = "LocalStorage", id = RouteParameter.Optional});
+			config.Routes.MapHttpRoute("ServiceApi", "api/service/{action}", new {controller = "Service"});
             config.Routes.MapHttpRoute("OperationLogApi", "api/operations",
                 new {controller = "Operations", action = "Get"});
             config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new {id = RouteParameter.Optional});

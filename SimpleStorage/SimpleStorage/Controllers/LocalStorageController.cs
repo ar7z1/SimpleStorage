@@ -18,7 +18,7 @@ namespace SimpleStorage.Controllers
 			this.storage = storage;
 		}
 
-		[HttpGet]
+		//[HttpGet]
 		public Value Get(string id)
 		{
 			stateRepository.ThrowIfNotStarted();
@@ -28,14 +28,14 @@ namespace SimpleStorage.Controllers
 			return result;
 		}
 
-		[HttpPut]
+		//[HttpPut]
 		public void Put(string id, [FromBody] Value value)
 		{
 			stateRepository.ThrowIfNotStarted();
 			storage.Set(id, value);
 		}
 
-		[HttpGet]
+		//[HttpGet]
 		public IEnumerable<ValueWithId> GetAllData()
 		{
 			stateRepository.ThrowIfNotStarted();

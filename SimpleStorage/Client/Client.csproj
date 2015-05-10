@@ -68,6 +68,8 @@
     <Compile Include="SimpleStorageClient.cs" />
     <Compile Include="ILocalStorageClient.cs" />
     <Compile Include="LocalStorageClient.cs" />
+    <Compile Include="IServiceClient.cs" />
+    <Compile Include="ServiceClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">

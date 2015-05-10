@@ -8,5 +8,4 @@ namespace Client
 	{
 		IEnumerable<ValueWithId> GetAllData();
 	}
-	
 }

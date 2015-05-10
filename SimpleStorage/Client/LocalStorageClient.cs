@@ -1,21 +1,22 @@
 using System.Net.Http;
 using Domain;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Client
 {
 	public class LocalStorageClient : ILocalStorageClient
 	{
-		private readonly string endpoint;
+		private readonly IPEndPoint endpoint;
 
-		public LocalStorageClient(string endpoint)
+		public LocalStorageClient(IPEndPoint endpoint)
 		{
 			this.endpoint = endpoint;
 		}
 
 		public void Put(string id, Value value)
 		{
-			var putUri = endpoint + "api/localStorage/" + id;
+			var putUri = string.Format("http://{0}/api/localStorage/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.PutAsJsonAsync(putUri, value).Result)
 				response.EnsureSuccessStatusCode();
@@ -23,7 +24,7 @@ namespace Client
 
 		public Value Get(string id)
 		{
-			var requestUri = endpoint + "api/localStorage/" + id;
+			var requestUri = string.Format("http://{0}/api/localStorage/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.GetAsync(requestUri).Result) {
 				response.EnsureSuccessStatusCode();
@@ -33,7 +34,7 @@ namespace Client
 
 		public IEnumerable<ValueWithId> GetAllData()
 		{
-			var requestUri = endpoint + "api/localStorage/getAllData";
+			var requestUri = string.Format("http://{0}/api/localStorage", endpoint);
 			using (var httpClient = new HttpClient())
 			using (var response = httpClient.GetAsync(requestUri).Result) {
 				response.EnsureSuccessStatusCode();

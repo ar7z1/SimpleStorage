@@ -6,85 +6,65 @@ using NUnit.Framework;
 
 namespace SimpleStorage.Tests.Controllers
 {
-    [TestFixture]
-    public class ValuesControllerFunctionalTests
-    {
-        private const int port = 15000;
-        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
-        private SimpleStorageClient client;
+	[TestFixture]
+	public class ValuesControllerFunctionalTests
+	{
+		private const int port = 15000;
+		private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
+		private SimpleStorageClient simpleStorageClient;
+		private IPEndPoint EndPoint = new IPEndPoint(IPAddress.Loopback, port);
+		private ServiceClient serviceClient;
 
-        [SetUp]
-        public void SetUp()
-        {
-            client = new SimpleStorageClient(endpoint);
-        }
+		[SetUp]
+		public void SetUp()
+		{
+			simpleStorageClient = new SimpleStorageClient(endpoint);
+			serviceClient = new ServiceClient(EndPoint);
+		}
 
-        [Test]
-        public void Get_KnownId_ShouldReturnValue()
-        {
-            const string id = "id";
-            var value = new Value {Content = "content"};
+		[Test]
+		public void Get_KnownId_ShouldReturnValue()
+		{
+			const string id = "id";
+			var value = new Value { Content = "content" };
 
-            using (SimpleStorageTestHelpers.StartService(port))
-            {
-                client.Put(id, value);
-                var actual = client.Get(id);
-                Assert.That(actual.Content, Is.EqualTo(value.Content));
-            }
-        }
+			using (SimpleStorageTestHelpers.StartService(port)) {
+				simpleStorageClient.Put(id, value);
+				var actual = simpleStorageClient.Get(id);
+				Assert.That(actual.Content, Is.EqualTo(value.Content));
+			}
+		}
 
-        [Test]
-        public void Get_StopInstance_ShouldThrow()
-        {
-            using (SimpleStorageTestHelpers.StartService(port))
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    using (
-                        var response =
-                            httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+		[Test]
+		public void Get_StoppedInstance_ShouldThrow()
+		{
+			using (SimpleStorageTestHelpers.StartService(port)) {
+				serviceClient.Stop();
 
-                    using (var response = httpClient.GetAsync(endpoint + "api/values/id").Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
-                }
-            }
-        }
+				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),
+				              () => simpleStorageClient.Get("unknownId"));
+			}
+		}
 
-        [Test]
-        public void Get_StartInstance_ShouldNotThrow()
-        {
-            using (SimpleStorageTestHelpers.StartService(port))
-            {
-                client.Put("id", new Value());
-                using (var httpClient = new HttpClient())
-                {
-                    using (
-                        var response =
-                            httpClient.PostAsync(endpoint + "api/service/stop", new ByteArrayContent(new byte[0])).Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+		[Test]
+		public void Get_StartInstance_ShouldNotThrow()
+		{
+			using (SimpleStorageTestHelpers.StartService(port)) {
+				simpleStorageClient.Put("id", new Value());
 
-                    using (
-                        var response =
-                            httpClient.PostAsync(endpoint + "api/service/start", new ByteArrayContent(new byte[0])).Result
-                        )
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+				serviceClient.Stop();
+				serviceClient.Start();
+				Assert.DoesNotThrow(() => simpleStorageClient.Get("id"));
+			}
+		}
 
-                    using (var response = httpClient.GetAsync(endpoint + "api/values/id").Result)
-                        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-                }
-            }
-        }
-
-        [Test]
-        public void Get_UnknownId_ShouldReturnNotFound()
-        {
-            var requestUri = endpoint + "api/values/unknownId";
-
-            using (SimpleStorageTestHelpers.StartService(port))
-            using (var httpClient = new HttpClient())
-            using (var response = httpClient.GetAsync(requestUri).Result)
-                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-        }
-    }
+		[Test]
+		public void Get_UnknownId_ShouldReturnNotFound()
+		{
+			using (SimpleStorageTestHelpers.StartService(port)) {
+				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("404"),
+				              () => simpleStorageClient.Get("unknownId"));
+			}
+		}
+	}
 }
