@@ -61,12 +61,12 @@ namespace SimpleStorage.Tests.Controllers
                 {
                     using (
                         var response =
-                            httpClient.PostAsync(endpoint + "api/admin/stop", new ByteArrayContent(new byte[0])).Result)
+                            httpClient.PostAsync(endpoint + "api/service/stop", new ByteArrayContent(new byte[0])).Result)
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 
                     using (
                         var response =
-                            httpClient.PostAsync(endpoint + "api/admin/start", new ByteArrayContent(new byte[0])).Result
+                            httpClient.PostAsync(endpoint + "api/service/start", new ByteArrayContent(new byte[0])).Result
                         )
                         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 

@@ -12,7 +12,7 @@ using System.Net;
 namespace SimpleStorage.Tests
 {
 	[TestFixture]
-	[Ignore]
+//	[Ignore]
 	public class ShardingTests
 	{
 		private const int port1 = 15000;

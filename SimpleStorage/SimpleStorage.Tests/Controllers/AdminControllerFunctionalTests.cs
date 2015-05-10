@@ -11,12 +11,12 @@ namespace SimpleStorage.Tests.Controllers
     {
         private const int port = 15000;
         private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
-        private InternalClient client;
+        private LocalStorageClient client;
 
         [SetUp]
         public void SetUp()
         {
-            client = new InternalClient(endpoint);
+            client = new LocalStorageClient(endpoint);
         }
 
         [Test]

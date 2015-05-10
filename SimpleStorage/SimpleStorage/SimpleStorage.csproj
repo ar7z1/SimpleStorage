@@ -75,7 +75,6 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ControllerHelpers.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
     <Compile Include="Infrastructure\IOperationLog.cs" />
@@ -98,6 +97,8 @@
     <Compile Include="Configuration\SimpleStorageConfigurationSection.cs" />
     <Compile Include="Configuration\IShardsConfiguration.cs" />
     <Compile Include="Configuration\IServerConfiguration.cs" />
+    <Compile Include="Controllers\LocalStorageController.cs" />
+    <Compile Include="Controllers\ServiceController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
