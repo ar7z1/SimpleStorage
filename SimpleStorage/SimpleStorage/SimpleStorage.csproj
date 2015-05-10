@@ -95,7 +95,6 @@
     <Compile Include="Infrastructure\Topology.cs" />
     <Compile Include="IoC\SimpleStorageRegistry.cs" />
     <Compile Include="IoC\DependencyResolver.cs" />
-    <Compile Include="IoC\IoCFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleStorageService.cs" />

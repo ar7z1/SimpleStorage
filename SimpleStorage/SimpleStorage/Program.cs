@@ -6,6 +6,7 @@ using CommandLine.Text;
 using SimpleStorage.Infrastructure;
 using SimpleStorage.Infrastructure.Replication;
 using SimpleStorage.IoC;
+using StructureMap;
 
 namespace SimpleStorage
 {
@@ -15,7 +16,7 @@ namespace SimpleStorage
 		{
 			var options = new Options();
 			if (Parser.Default.ParseArguments(args, options)) {
-				var container = IoCFactory.NewContainer();
+				var container = new Container(new SimpleStorageRegistry());
 
 				var topology = new Topology(options.ReplicasPorts);
 				container.Configure(c => c.For<ITopology>().Use(topology).Singleton());
