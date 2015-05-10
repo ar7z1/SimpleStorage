@@ -17,6 +17,5 @@ namespace SimpleStorage
         public IPEndPoint MasterEndpoint { get; private set; }
 
         public int CurrentNodePort { get; set; }
-        public int[] OtherShardsPorts { get; set; }
     }
 }

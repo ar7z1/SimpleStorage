@@ -102,7 +102,7 @@
     <Compile Include="ApplicationConfigurator.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Configuration\IShardingConfiguration.cs" />
-    <Compile Include="Configuration\ShardingConfiguration.cs" />
+    <Compile Include="Configuration\ServerConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

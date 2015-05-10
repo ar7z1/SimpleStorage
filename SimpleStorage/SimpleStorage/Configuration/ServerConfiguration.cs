@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SimpleStorage
 {
-	public class ShardingConfiguration : IShardingConfiguration
+	public class ServerConfiguration : IShardingConfiguration
 	{
 		public IEnumerable<IPEndPoint> Shards { get; set; }
 	}
