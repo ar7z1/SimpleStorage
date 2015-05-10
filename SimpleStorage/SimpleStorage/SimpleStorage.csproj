@@ -106,6 +106,7 @@
     <Compile Include="Configuration\ShardConfiguration.cs" />
     <Compile Include="Configuration\SimpleStorageConfigurationSection.cs" />
     <Compile Include="Configuration\IShardsConfiguration.cs" />
+    <Compile Include="Configuration\IServerConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

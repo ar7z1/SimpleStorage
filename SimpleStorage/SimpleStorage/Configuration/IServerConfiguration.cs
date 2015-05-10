@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace SimpleStorage.Configuration
 {
-	public interface IShardsConfiguration
+	public interface IServerConfiguration
 	{
-		IEnumerable<IPEndPoint> Shards { get; }
+		int Port { get; }
 	}
 }

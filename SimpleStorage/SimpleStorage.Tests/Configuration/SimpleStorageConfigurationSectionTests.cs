@@ -19,6 +19,16 @@ namespace Configuration
 
 			Assert.That(actual.Single(), Is.EqualTo(new IPEndPoint(IPAddress.Loopback, 15000)));
 		}
+
+		[Test]
+		public void ConfigurationManager_Always_ShouldReadPortFromAppConfig()
+		{
+			var configuration = (SimpleStorageConfigurationSection)ConfigurationManager.GetSection("simpleStorage");
+
+			var actual = configuration.Port;
+
+			Assert.That(actual, Is.EqualTo(15000));
+		}
 	}
 }
 
