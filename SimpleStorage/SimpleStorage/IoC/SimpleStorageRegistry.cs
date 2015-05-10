@@ -14,7 +14,7 @@ namespace SimpleStorage.IoC
             Scan(p =>
             {
                 p.TheCallingAssembly();
-                p.RegisterConcreteTypesAgainstTheFirstInterface();
+				p.WithDefaultConventions();
                 p.AddAllTypesOf<IHttpController>();
             });
             For<IStorage>().Singleton();
