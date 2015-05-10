@@ -4,9 +4,9 @@ using SimpleStorage.Infrastructure;
 
 namespace SimpleStorage
 {
-    public class Configuration : IConfiguration
+    public class OldConfiguration : IConfiguration
     {
-        public Configuration(ITopology topology)
+        public OldConfiguration(ITopology topology)
         {
             IsMaster = !topology.Replicas.Any();
             if (!IsMaster)

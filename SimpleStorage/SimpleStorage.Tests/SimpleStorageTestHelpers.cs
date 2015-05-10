@@ -11,7 +11,7 @@ namespace SimpleStorage.Tests
 		{
 			var container = new Container(new SimpleStorageRegistry());
 			var topology = new Topology(new int[0]);
-			var configuration = new Configuration(topology) {
+			var configuration = new OldConfiguration(topology) {
 				CurrentNodePort = servicePort
 			};
 			container.Configure(c => c.For<IConfiguration>().Use(configuration));

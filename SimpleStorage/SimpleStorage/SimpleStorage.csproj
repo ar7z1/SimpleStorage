@@ -75,9 +75,9 @@
     <Reference Include="System.Web.Http.Owin">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ControllerHelpers.cs" />
     <Compile Include="Controllers\OperationsController.cs" />
@@ -100,14 +100,15 @@
     <Compile Include="SimpleStorageService.cs" />
     <Compile Include="ApplicationConfigurator.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
-    <Compile Include="Configuration\IShardingConfiguration.cs" />
     <Compile Include="Configuration\ServerConfiguration.cs" />
+    <Compile Include="OldConfiguration.cs" />
+    <Compile Include="Configuration\ShardsConfiguration.cs" />
+    <Compile Include="Configuration\ShardConfiguration.cs" />
+    <Compile Include="Configuration\SimpleStorageConfigurationSection.cs" />
+    <Compile Include="Configuration\IShardsConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="killAll.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="runAll.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

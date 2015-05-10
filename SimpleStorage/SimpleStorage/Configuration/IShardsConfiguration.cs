@@ -1,10 +1,11 @@
 using System.Net;
 using System.Collections.Generic;
 
-namespace SimpleStorage
+namespace SimpleStorage.Configuration
 {
-	public interface IShardingConfiguration
+	public interface IShardsConfiguration
 	{
 		IEnumerable<IPEndPoint> Shards { get; }
 	}
+
 }
