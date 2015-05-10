@@ -1,9 +1,9 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
-using Core;
 using Owin;
 using SimpleStorage.IoC;
 using StructureMap;
+using Core.Web;
 
 namespace SimpleStorage
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Http.ExceptionHandling;
 
-namespace Core
+namespace Core.Web
 {
     public class ConsoleExceptionLogger : ExceptionLogger
     {

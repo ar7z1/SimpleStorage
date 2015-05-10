@@ -1,8 +1,8 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using Coordinator.IoC;
-using Core;
 using Owin;
+using Core.Web;
 
 namespace Coordinator
 {

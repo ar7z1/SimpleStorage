@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Owin;
 
-namespace Core
+namespace Core.Web
 {
     public class LogMiddleware : OwinMiddleware
     {
