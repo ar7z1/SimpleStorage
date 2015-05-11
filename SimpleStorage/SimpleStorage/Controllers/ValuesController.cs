@@ -24,7 +24,6 @@ namespace SimpleStorage.Controllers
 			this.stateRepository = stateRepository;
 		}
 
-		// GET api/values/5
 		public Value Get(string id)
 		{
 			stateRepository.ThrowIfNotStarted();
@@ -34,7 +33,6 @@ namespace SimpleStorage.Controllers
 			return result;
 		}
 
-		// PUT api/values/5
 		public void Put(string id, [FromBody] Value value)
 		{
 			stateRepository.ThrowIfNotStarted();

@@ -21,7 +21,9 @@ namespace SimpleStorage.Tests.Controllers
 		{
 			storage = new Storage(new OperationLog(), new ValueComparer());
 			stateRepository = new StateRepository();
-			sut = new ValuesController(storage, stateRepository, new StubServerConfiguration(), new StubShardsConfiguration());
+			var stubServerConfiguration = new StubServerConfiguration(){ Port = 15000 };
+			var stubShardsConfiguration = new StubShardsConfiguration(){ Shards = new[]{ new IPEndPoint(IPAddress.Loopback, 15000) } };
+			sut = new ValuesController(storage, stateRepository, stubServerConfiguration, stubShardsConfiguration);
 		}
 
 		[Test]
