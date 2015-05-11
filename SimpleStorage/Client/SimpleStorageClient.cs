@@ -9,7 +9,7 @@ namespace Client
 {
 	public class SimpleStorageClient : ISimpleStorageClient
 	{
-		private readonly IEnumerable<IPEndPoint> endpoints;
+		private readonly IPEndPoint[] endpoints;
 
 		public SimpleStorageClient(params IPEndPoint[] endpoints)
 		{
