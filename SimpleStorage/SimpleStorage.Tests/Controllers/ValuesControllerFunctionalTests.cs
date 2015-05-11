@@ -10,7 +10,6 @@ namespace SimpleStorage.Tests.Controllers
 	public class ValuesControllerFunctionalTests
 	{
 		private const int port = 15000;
-		private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
 		private SimpleStorageClient simpleStorageClient;
 		private IPEndPoint EndPoint = new IPEndPoint(IPAddress.Loopback, port);
 		private ServiceClient serviceClient;
@@ -18,7 +17,7 @@ namespace SimpleStorage.Tests.Controllers
 		[SetUp]
 		public void SetUp()
 		{
-			simpleStorageClient = new SimpleStorageClient(endpoint);
+			simpleStorageClient = new SimpleStorageClient(EndPoint);
 			serviceClient = new ServiceClient(EndPoint);
 		}
 

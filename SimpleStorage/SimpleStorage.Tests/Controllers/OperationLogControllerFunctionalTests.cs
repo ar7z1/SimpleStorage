@@ -2,6 +2,7 @@
 using Client;
 using Domain;
 using NUnit.Framework;
+using System.Net;
 
 namespace SimpleStorage.Tests.Controllers
 {
@@ -9,7 +10,7 @@ namespace SimpleStorage.Tests.Controllers
     public class OperationLogControllerFunctionalTests
     {
         private const int port = 15000;
-        private readonly string endpoint = string.Format("http://127.0.0.1:{0}/", port);
+		private readonly IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, port);
         private OperationLogClient operationLogClient;
         private SimpleStorageClient storageClient;
 
