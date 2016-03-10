@@ -100,10 +100,6 @@
       <Project>{4FF303FC-FAAA-4345-A65D-3C33A46D6D0E}</Project>
       <Name>SimpleStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core.Web\Core.Web.csproj">
-      <Project>{35F021DF-016F-4438-B756-5B6E8B4AE9EB}</Project>
-      <Name>Core.Web</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

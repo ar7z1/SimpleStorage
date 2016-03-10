@@ -99,6 +99,8 @@
     <Compile Include="Configuration\IServerConfiguration.cs" />
     <Compile Include="Controllers\LocalStorageController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
+    <Compile Include="ConsoleExceptionLogger.cs" />
+    <Compile Include="LogMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -112,10 +114,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{A46FE6BE-06DA-4580-983D-92347EFA8313}</Project>
       <Name>Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core.Web\Core.Web.csproj">
-      <Project>{35F021DF-016F-4438-B756-5B6E8B4AE9EB}</Project>
-      <Name>Core.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
