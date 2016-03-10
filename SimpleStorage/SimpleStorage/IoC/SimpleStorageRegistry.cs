@@ -4,6 +4,7 @@ using Domain;
 using SimpleStorage.Infrastructure;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
+using StructureMap;
 
 namespace SimpleStorage.IoC
 {

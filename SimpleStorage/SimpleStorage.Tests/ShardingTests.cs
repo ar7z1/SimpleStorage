@@ -12,7 +12,7 @@ using System.Net;
 namespace SimpleStorage.Tests
 {
 	[TestFixture]
-	[Ignore]
+	[Ignore("Второе задание")]
 	public class ShardingTests
 	{
 		private const int port1 = 15000;
@@ -23,8 +23,8 @@ namespace SimpleStorage.Tests
 		private static IPEndPoint EndPoint3 = new IPEndPoint(IPAddress.Loopback, port3);
 		private SimpleStorageClient simpleStorageClient;
 		private readonly IShardsConfiguration shardsConfiguration = new StubShardsConfiguration() { 
-			Shards = new[] { EndPoint1, EndPoint2, EndPoint3 }
-		};
+            Shards = new[] { EndPoint1, EndPoint2, EndPoint3 }
+        };
 
 		[SetUp]
 		public void SetUp()
