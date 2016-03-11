@@ -4,6 +4,7 @@ using Client;
 using Domain;
 using NUnit.Framework;
 using System.Net;
+using System.Net.Http;
 
 namespace SimpleStorage.Tests
 {
@@ -60,6 +61,20 @@ namespace SimpleStorage.Tests
                 };
 
                 Assert.That(actual.Where(b => b).Count(), Is.GreaterThan(1), "Данные сохраняются ненадежно");
+            }
+        }
+
+        [Test]
+        public void Replication_Client_ShouldReturn503_WhenQuorumUnavaliable()
+        {
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port1)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port2)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port3)))
+            {
+                node1ServiceClient.Stop();
+                node2ServiceClient.Stop();
+                Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("503"),
+                    () => sut.Get(Guid.NewGuid().ToString()));
             }
         }
 
