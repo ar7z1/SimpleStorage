@@ -43,7 +43,7 @@ namespace SimpleStorage
             {
                 token.Register(() => {
                     cts.Cancel();
-                    synchronizationTask.Wait(cancellationToken);
+                    synchronizationTask.Wait();
                 });
             }
 		}

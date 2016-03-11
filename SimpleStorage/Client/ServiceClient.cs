@@ -1,6 +1,4 @@
 using System.Net.Http;
-using Domain;
-using System.Collections.Generic;
 using System.Net;
 
 namespace Client
