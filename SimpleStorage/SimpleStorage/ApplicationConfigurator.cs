@@ -22,6 +22,8 @@ namespace SimpleStorage
 			config.Routes.MapHttpRoute("ServiceApi", "api/service/{action}", new {controller = "Service"});
 			config.Routes.MapHttpRoute("OperationLogApi", "api/operations",
 			                                    new {controller = "Operations", action = "Get"});
+            config.Routes.MapHttpRoute("ConfigurationApi", "api/configuration",
+                                       new {controller = "Configuration", action = "Get"});
 			config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new {id = RouteParameter.Optional});
 			config.Services.Replace(typeof(IExceptionLogger), new ConsoleExceptionLogger());
 			appBuilder.Use<LogMiddleware>();

@@ -92,18 +92,13 @@
     <Compile Include="SimpleStorageService.cs" />
     <Compile Include="ApplicationConfigurator.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
-    <Compile Include="Configuration\ShardsConfiguration.cs" />
-    <Compile Include="Configuration\ShardConfiguration.cs" />
-    <Compile Include="Configuration\SimpleStorageConfigurationSection.cs" />
-    <Compile Include="Configuration\IShardsConfiguration.cs" />
-    <Compile Include="Configuration\IServerConfiguration.cs" />
     <Compile Include="Controllers\LocalStorageController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="ConsoleExceptionLogger.cs" />
     <Compile Include="LogMiddleware.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

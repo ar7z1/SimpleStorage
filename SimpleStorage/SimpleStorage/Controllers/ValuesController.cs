@@ -2,7 +2,6 @@
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
-using SimpleStorage.Configuration;
 
 namespace SimpleStorage.Controllers
 {
@@ -10,16 +9,13 @@ namespace SimpleStorage.Controllers
 	{
 		private readonly IStateRepository stateRepository;
 		private readonly IStorage storage;
-		private readonly IServerConfiguration serverConfiguration;
-		private readonly IShardsConfiguration shardsConfiguration;
+        private readonly SimpleStorageConfiguration configuration;
 
 		public ValuesController(IStorage storage,
 		                        IStateRepository stateRepository,
-		                        IServerConfiguration serverConfiguration,
-		                        IShardsConfiguration shardsConfiguration)
+                                SimpleStorageConfiguration configuration)
 		{
-			this.shardsConfiguration = shardsConfiguration;
-			this.serverConfiguration = serverConfiguration;
+            this.configuration = configuration;
 			this.storage = storage;
 			this.stateRepository = stateRepository;
 		}

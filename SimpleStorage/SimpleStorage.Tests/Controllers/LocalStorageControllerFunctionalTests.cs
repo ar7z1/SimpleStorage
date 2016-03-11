@@ -12,14 +12,16 @@ namespace SimpleStorage.Tests.Controllers
 	{
 		private const int port = 15000;
 		private LocalStorageClient localStorageClient;
-		private IPEndPoint EndPoint = new IPEndPoint(IPAddress.Loopback, port);
 		private ServiceClient serviceClient;
+        private SimpleStorageConfiguration configuration;
 
 		[SetUp]
 		public void SetUp()
 		{
-			localStorageClient = new LocalStorageClient(EndPoint);
-			serviceClient = new ServiceClient(EndPoint);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, port);
+            localStorageClient = new LocalStorageClient(endpoint);
+            serviceClient = new ServiceClient(endpoint);
+            configuration = new SimpleStorageConfiguration(port);
 		}
 
 		[Test]
@@ -28,7 +30,7 @@ namespace SimpleStorage.Tests.Controllers
 			const string id = "id";
 			var value = new Value { Content = "content" };
 
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				localStorageClient.Put(id, value);
 				var actual = localStorageClient.Get(id);
 				Assert.That(actual.Content, Is.EqualTo(value.Content));
@@ -38,7 +40,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Get_UnknownId_ShouldReturnNotFound()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("404"),
 				              () => localStorageClient.Get("unknownId"));
 			}
@@ -47,7 +49,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Get_StoppedInstance_ShouldReturnInternalServerError()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				serviceClient.Stop();
 
 				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),
@@ -58,7 +60,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Put_StoppedInstance_ShouldReturnInternalServerError()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				serviceClient.Stop();
 
 				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),
@@ -72,7 +74,7 @@ namespace SimpleStorage.Tests.Controllers
 			const string id = "id";
 			var value = new Value { Content = "content" };
 
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				localStorageClient.Put(id, value);
 				var actual = localStorageClient.GetAllData();
 				Assert.That(actual.ToArray(), Has.Length.EqualTo(1));
@@ -82,7 +84,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void GetAllData_StopedInstance_ShouldReturnInternalServerError()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				serviceClient.Stop();
 
 				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),

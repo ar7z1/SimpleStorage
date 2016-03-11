@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
-using SimpleStorage.Infrastructure;
-using SimpleStorage.IoC;
 using StructureMap;
-using System.Configuration;
-using SimpleStorage.Configuration;
+using SimpleStorage.IoC;
+using Domain;
 
 namespace SimpleStorage
 {
@@ -13,12 +9,13 @@ namespace SimpleStorage
 	{
 		public static void Main(string[] args)
 		{
-			var container = new Container(new SimpleStorageRegistry());
-			var config = (SimpleStorageConfigurationSection)ConfigurationManager.GetSection("simpleStorage");
-			container.Configure(c => c.For<IServerConfiguration>().Use(config));
-			container.Configure(c => c.For<IShardsConfiguration>().Use(config));
+            int port = 0;
+            if (args == null || args.Length != 1 || !int.TryParse(args[0], out port)) {
+                Console.Error.WriteLine("Usage: SimpleStorage <port>");
+                Environment.Exit(-1);
+            }
 
-			using (SimpleStorageService.Start(string.Format("http://+:{0}/", config.Port), container)) {
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port))) {
 				while (true) {
 					Console.ReadLine();
 				}

@@ -10,15 +10,17 @@ namespace SimpleStorage.Tests.Controllers
     public class OperationLogControllerFunctionalTests
     {
         private const int port = 15000;
-		private readonly IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, port);
         private OperationLogClient operationLogClient;
         private SimpleStorageClient storageClient;
+        private SimpleStorageConfiguration configuration;
 
         [SetUp]
         public void SetUp()
         {
+            var endpoint = new IPEndPoint(IPAddress.Loopback, port);
             storageClient = new SimpleStorageClient(endpoint);
             operationLogClient = new OperationLogClient(endpoint);
+            configuration = new SimpleStorageConfiguration(port);
         }
 
         [Test]
@@ -26,7 +28,7 @@ namespace SimpleStorage.Tests.Controllers
         {
             const string id = "id";
             var version1 = new Value {Content = "content", IsDeleted = false, Revision = 0};
-            using (SimpleStorageTestHelpers.StartService(port))
+            using (SimpleStorageService.Start(configuration))
             {
                 storageClient.Put(id, version1);
                 var version2 = new Value {IsDeleted = true, Revision = 1, Content = "anotherContent"};
@@ -46,7 +48,7 @@ namespace SimpleStorage.Tests.Controllers
         [Test]
         public void Read_WithSeek_ShouldSkip()
         {
-            using (SimpleStorageTestHelpers.StartService(port))
+            using (SimpleStorageService.Start(configuration))
             {
                 storageClient.Put("id1", new Value {Content = "1"});
                 storageClient.Put("id2", new Value {Content = "2"});
@@ -61,7 +63,7 @@ namespace SimpleStorage.Tests.Controllers
         [Test]
         public void Read_BigPosition_ShouldReturnEmpty()
         {
-            using (SimpleStorageTestHelpers.StartService(port))
+            using (SimpleStorageService.Start(configuration))
             {
                 var actual = operationLogClient.Read(1000, 1).ToArray();
                 Assert.That(actual.Length, Is.EqualTo(0));

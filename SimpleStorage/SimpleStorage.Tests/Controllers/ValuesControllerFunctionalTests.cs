@@ -11,14 +11,16 @@ namespace SimpleStorage.Tests.Controllers
 	{
 		private const int port = 15000;
 		private SimpleStorageClient simpleStorageClient;
-		private IPEndPoint EndPoint = new IPEndPoint(IPAddress.Loopback, port);
 		private ServiceClient serviceClient;
+        private SimpleStorageConfiguration configuration;
 
 		[SetUp]
 		public void SetUp()
 		{
-			simpleStorageClient = new SimpleStorageClient(EndPoint);
-			serviceClient = new ServiceClient(EndPoint);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, port);
+			simpleStorageClient = new SimpleStorageClient(endpoint);
+			serviceClient = new ServiceClient(endpoint);
+            configuration = new SimpleStorageConfiguration(port);
 		}
 
 		[Test]
@@ -27,7 +29,7 @@ namespace SimpleStorage.Tests.Controllers
 			const string id = "id";
 			var value = new Value { Content = "content" };
 
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				simpleStorageClient.Put(id, value);
 				var actual = simpleStorageClient.Get(id);
 				Assert.That(actual.Content, Is.EqualTo(value.Content));
@@ -37,7 +39,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Get_StoppedInstance_ShouldThrow()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				serviceClient.Stop();
 
 				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),
@@ -48,7 +50,7 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Get_StartInstance_ShouldNotThrow()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
+            using (SimpleStorageService.Start(configuration)) {
 				simpleStorageClient.Put("id", new Value());
 
 				serviceClient.Stop();
@@ -60,10 +62,21 @@ namespace SimpleStorage.Tests.Controllers
 		[Test]
 		public void Get_UnknownId_ShouldReturnNotFound()
 		{
-			using (SimpleStorageTestHelpers.StartService(port)) {
-				Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("404"),
-				              () => simpleStorageClient.Get("unknownId"));
+            using (SimpleStorageService.Start(configuration)) {
+                Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("404"),
+                  () => simpleStorageClient.Get("unknownId"));
 			}
 		}
+
+        [Test]
+        public void Put_StoppedInstance_ShouldThrow()
+        {
+            using (SimpleStorageService.Start(configuration)) {
+                serviceClient.Stop();
+
+                Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("500"),
+                              () => simpleStorageClient.Put("id", new Value {Content = "content"}));
+            }
+        }
 	}
 }
