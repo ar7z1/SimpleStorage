@@ -105,6 +105,24 @@ namespace SimpleStorage.Tests
             }
         }
 
+        [Test]
+        public void Get_UnknownIds_ShouldReturnNotFoundForAll()
+        {
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port1)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port2)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(port3)))
+            {
+                ConfigureShards();
+
+                for (var i = 0; i < 100; i++) {
+                    var id = Guid.NewGuid().ToString();
+
+                    Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("404"),
+                                  () => sut.Get(id));
+                }
+            }
+        }
+
         private void ConfigureShards()
         {
             configurationClient1.AddShardNode(shard2);

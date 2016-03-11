@@ -25,6 +25,13 @@ namespace Domain
             shards.Add(endpoint);
         }
 
+        public IPEndPoint CurrentNodeEndpoint
+        {
+            get {
+                return new IPEndPoint(IPAddress.Loopback, Port);
+            }
+        }
+
         public IEnumerable<IPEndPoint> Replicas { get { return replicas; } }
 
         public void AddReplica(IPEndPoint endpoint)

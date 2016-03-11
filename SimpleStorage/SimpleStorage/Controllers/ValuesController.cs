@@ -2,6 +2,10 @@
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
+using Client;
+using System.Linq;
+using System;
+using System.Net.Http;
 
 namespace SimpleStorage.Controllers
 {
@@ -21,18 +25,25 @@ namespace SimpleStorage.Controllers
 		}
 
 		public Value Get(string id)
-		{
-			stateRepository.ThrowIfNotStarted();
-			var result = storage.Get(id);
-			if (result == null)
-				throw new HttpResponseException(HttpStatusCode.NotFound);
-			return result;
-		}
+        {
+            stateRepository.ThrowIfNotStarted();
+
+            var result = storage.Get(id);
+            if (result == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            return result;
+        }
 
 		public void Put(string id, [FromBody] Value value)
 		{
 			stateRepository.ThrowIfNotStarted();
-			storage.Set(id, value);
+
+            storage.Set(id, value);
 		}
+
+        private IPEndPoint GetShardEndpoint(string id)
+        {
+            return configuration.CurrentNodeEndpoint;
+        }
 	}
 }
