@@ -7,10 +7,12 @@ namespace SimpleStorage.Infrastructure
     public class OperationLogSynchronizer
     {
         private SimpleStorageConfiguration configuration;
+        private readonly IStorage storage;
 
-        public OperationLogSynchronizer(SimpleStorageConfiguration configuration)
+        public OperationLogSynchronizer(SimpleStorageConfiguration configuration, IStorage storage)
         {
             this.configuration = configuration;
+            this.storage = storage;
         }
 
         public Task Synchronize(CancellationToken cancellationToken)
