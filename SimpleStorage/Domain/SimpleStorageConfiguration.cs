@@ -20,9 +20,9 @@ namespace Domain
             }
         }
 
-        public int Port { get; }
+        public int Port { get; private set; }
 
-        public IPEndPoint[][] Topology { get; }
+        public IPEndPoint[][] Topology { get; private set; }
 
         public IPEndPoint CurrentNodeEndpoint
         {
