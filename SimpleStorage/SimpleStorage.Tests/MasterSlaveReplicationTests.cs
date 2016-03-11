@@ -50,7 +50,7 @@ namespace SimpleStorage.Tests
             using (SimpleStorageService.Start(new SimpleStorageConfiguration(port3) {Master = master}))
             {
                 Assert.Throws(Is.TypeOf<HttpRequestException>().And.Property("Message").Contains("403"),
-                    () => slaveClient.Get(id));
+                    () => slaveClient.Put(id, new Value { Content = "content" }));
                 masterClient.Put(id, new Value {Content = "content"});
             }
         }
