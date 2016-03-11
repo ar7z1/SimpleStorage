@@ -78,6 +78,7 @@
     <Compile Include="Controllers\LocalStorageControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ConfigurationControllerFunctionalTests.cs" />
     <Compile Include="IntraDatabaseRoutingShardingTests.cs" />
+    <Compile Include="MasterSlaveReplicationTests.cs" />
     <Compile Include="SmartClientShardingTests.cs" />
     <Compile Include="Controllers\CoordinatorControllerFunctionalTests.cs" />
     <Compile Include="CoordinatorShardingTests.cs" />
