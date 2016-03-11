@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net;
 
 namespace Client
 {
-    public class CoordinatorClient : ICoordinatorClient
+    public class CoordinatorClient
     {
-        private readonly string endpoint;
+        private readonly IPEndPoint endpoint;
 
-        public CoordinatorClient(string endpoint)
+        public CoordinatorClient(IPEndPoint endpoint)
         {
-            if (endpoint == null)
-                throw new ArgumentException("Empty endpoint!", "endpoint");
             this.endpoint = endpoint;
         }
 
-        public int Get(string id)
+        public IPEndPoint Get(string id)
         {
-            var requestUri = endpoint + "api/shardMapping/" + id;
+            string requestUri = string.Format("http://{0}/api/coordinate/{1}", endpoint, id);
             using (var client = new HttpClient())
             using (var response = client.GetAsync(requestUri).Result)
             {
                 response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<int>().Result;
+                return response.Content.ReadAsAsync<IPEndPoint>().Result;
             }
         }
     }

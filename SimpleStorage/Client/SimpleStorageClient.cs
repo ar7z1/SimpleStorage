@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Client
 {
-	public class SimpleStorageClient : ISimpleStorageClient
+	public class SimpleStorageClient
 	{
 		private readonly IPEndPoint[] endpoints;
 

@@ -97,6 +97,7 @@
     <Compile Include="ConsoleExceptionLogger.cs" />
     <Compile Include="LogMiddleware.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Controllers\CoordinatorController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

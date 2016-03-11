@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Client
 {
-	public class LocalStorageClient : ILocalStorageClient
+	public class LocalStorageClient
 	{
 		private readonly IPEndPoint endpoint;
 

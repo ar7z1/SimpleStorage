@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Client
 {
-    public class OperationLogClient: IOperationLogClient
+    public class OperationLogClient
     {
 		private readonly IPEndPoint endpoint;
 

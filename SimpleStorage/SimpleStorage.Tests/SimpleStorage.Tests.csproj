@@ -79,6 +79,7 @@
     <Compile Include="Controllers\ConfigurationControllerFunctionalTests.cs" />
     <Compile Include="IntraDatabaseRoutingShardingTests.cs" />
     <Compile Include="SmartClientShardingTests.cs" />
+    <Compile Include="Controllers\CoordinatorControllerFunctionalTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

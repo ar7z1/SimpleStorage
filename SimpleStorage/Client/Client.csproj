@@ -60,13 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoordinatorClient.cs" />
-    <Compile Include="ICoordinatorClient.cs" />
-    <Compile Include="IOperationLogClient.cs" />
-    <Compile Include="ISimpleStorageClient.cs" />
     <Compile Include="OperationLogClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleStorageClient.cs" />
-    <Compile Include="ILocalStorageClient.cs" />
     <Compile Include="LocalStorageClient.cs" />
     <Compile Include="IServiceClient.cs" />
     <Compile Include="ServiceClient.cs" />
