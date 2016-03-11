@@ -74,6 +74,7 @@
     <Compile Include="Controllers\OperationLogControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ValuesControllerFunctionalTests.cs" />
     <Compile Include="Infrastructure\StorageTests.cs" />
+    <Compile Include="QuorumReplicationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\LocalStorageControllerFunctionalTests.cs" />
     <Compile Include="Controllers\ConfigurationControllerFunctionalTests.cs" />

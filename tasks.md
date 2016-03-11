@@ -8,7 +8,7 @@
 Изменения нужно будет вносить в `ValuesController.cs` и в `OperationLogSynchronizer.cs` (нужно правильно реализовать функцию `SynchronizationAction`).
 Выполнение задания проверяют `MasterSlaveReplicationTests`. Нужно сделать так, чтобы все тесты были зелеными.
 
-### Quorum read/write на клиенте
+### Quorum read/write
 
 ## Sharding
 
