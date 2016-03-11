@@ -11,7 +11,7 @@ namespace SimpleStorage.Tests
 {
 	[TestFixture]
     [Explicit("Шардинг. Умный клиент")]
-	public class ShardingTests
+	public class SmartClientShardingTests
 	{
 		private const int port1 = 15000;
         private static IPEndPoint shard1 = new IPEndPoint(IPAddress.Loopback, port1);

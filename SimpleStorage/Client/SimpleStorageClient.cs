@@ -20,7 +20,8 @@ namespace Client
 
 		public void Put(string id, Value value)
 		{
-			var requestUri = string.Format("http://{0}/api/values/{1}", endpoints.First(), id);
+            var endpoint = GetEndpoint(id);
+			var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.PutAsJsonAsync(requestUri, value).Result)
 				response.EnsureSuccessStatusCode();
@@ -28,12 +29,18 @@ namespace Client
 
 		public Value Get(string id)
 		{
-			var requestUri = string.Format("http://{0}/api/values/{1}", endpoints.First(), id);
+            var endpoint = GetEndpoint(id);
+            var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.GetAsync(requestUri).Result) {
 				response.EnsureSuccessStatusCode();
 				return response.Content.ReadAsAsync<Value>().Result;
 			}
 		}
+
+        private EndPoint GetEndpoint(string id)
+        {
+            return endpoints.First();
+        }
 	}
 }
