@@ -32,25 +32,36 @@ namespace Client
 		{
             var replicas = GetShardEndpoint(id);
             var endpoint = replicas.First();
-            var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
-			using (var client = new HttpClient())
-			using (var response = client.PutAsJsonAsync(requestUri, value).Result)
-				response.EnsureSuccessStatusCode();
+            PutOnSingleReplica(id, value, endpoint);
 		}
 
-		public Value Get(string id)
+	    private static void PutOnSingleReplica(string id, Value value, EndPoint endpoint)
+	    {
+	        var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
+	        using (var client = new HttpClient())
+	        using (var response = client.PutAsJsonAsync(requestUri, value).Result)
+	            response.EnsureSuccessStatusCode();
+	    }
+
+	    public Value Get(string id)
 		{
             var replicas = GetShardEndpoint(id);
             var endpoint = replicas.First();
-            var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
-			using (var client = new HttpClient())
-			using (var response = client.GetAsync(requestUri).Result) {
-				response.EnsureSuccessStatusCode();
-				return response.Content.ReadAsAsync<Value>().Result;
-			}
+            return GetFromSingleReplica(id, endpoint);
 		}
 
-        private IEnumerable<EndPoint> GetShardEndpoint(string id)
+	    private static Value GetFromSingleReplica(string id, EndPoint endpoint)
+	    {
+	        var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
+	        using (var client = new HttpClient())
+	        using (var response = client.GetAsync(requestUri).Result)
+	        {
+	            response.EnsureSuccessStatusCode();
+	            return response.Content.ReadAsAsync<Value>().Result;
+	        }
+	    }
+
+	    private IEnumerable<EndPoint> GetShardEndpoint(string id)
         {
             return topology.First();
         }
