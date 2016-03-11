@@ -13,14 +13,14 @@ namespace Client
             this.endpoint = endpoint;
         }
 
-        public IPEndPoint Get(string id)
+        public IPEndPoint[] Get(string id)
         {
             string requestUri = string.Format("http://{0}/api/coordinate/{1}", endpoint, id);
             using (var client = new HttpClient())
             using (var response = client.GetAsync(requestUri).Result)
             {
                 response.EnsureSuccessStatusCode();
-                return response.Content.ReadAsAsync<IPEndPoint>().Result;
+                return response.Content.ReadAsAsync<IPEndPoint[]>().Result;
             }
         }
     }

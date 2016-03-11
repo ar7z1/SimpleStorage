@@ -19,7 +19,7 @@ namespace Controllers
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, port);
             coordinatorClient = new CoordinatorClient(endpoint);
-            configuration = new SimpleStorageConfiguration(port);
+            configuration = new SimpleStorageConfiguration(port, new[]{ new[]{ endpoint } });
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace Controllers
             using (SimpleStorageService.Start(configuration))
             {
                 var actual = coordinatorClient.Get(Guid.NewGuid().ToString());
-                Assert.That(actual, Is.EqualTo(new IPEndPoint(IPAddress.Loopback, port)));
+                Assert.That(actual, Is.EqualTo(new[]{ new IPEndPoint(IPAddress.Loopback, port) }));
             }
         }
     }

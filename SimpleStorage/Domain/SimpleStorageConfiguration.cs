@@ -1,5 +1,7 @@
 using System.Net;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Domain
 {
@@ -7,23 +9,20 @@ namespace Domain
     {
         List<IPEndPoint> shards;
 
-        List<IPEndPoint> replicas;
-
-        public SimpleStorageConfiguration(int port)
+        public SimpleStorageConfiguration(int port, IPEndPoint[][] topology = null)
         {
             Port = port;
-            shards = new List<IPEndPoint>();
-            replicas = new List<IPEndPoint>();
+
+            if (topology != null) {
+                if (topology.Any(s => s == null || !s.Any()))
+                    throw new ArgumentException("Bad topology!", "topology");
+                Topology = topology;
+            }
         }
 
         public int Port { get; }
 
-        public IEnumerable<IPEndPoint> Shards { get { return shards; } }
-
-        public void AddShard(IPEndPoint endpoint)
-        {
-            shards.Add(endpoint);
-        }
+        public IPEndPoint[][] Topology { get; }
 
         public IPEndPoint CurrentNodeEndpoint
         {
@@ -32,13 +31,14 @@ namespace Domain
             }
         }
 
-        public IEnumerable<IPEndPoint> Replicas { get { return replicas; } }
-
-        public void AddReplica(IPEndPoint endpoint)
-        {
-            replicas.Add(endpoint);
-        }
-
         public IPEndPoint Master { get; set; }
+
+        //todo kill
+        public IEnumerable<IPEndPoint> Shards { get { return shards; } }
+
+        public void AddShard(IPEndPoint endpoint)
+        {
+            shards.Add(endpoint);
+        }
     }
 }

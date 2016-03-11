@@ -22,17 +22,6 @@ namespace Client
                 response.EnsureSuccessStatusCode();
         }
 
-        public void AddReplicaNode(IPEndPoint endpoint)
-        {
-            //TODO
-        }
-
-        public void AddMasterNode(IPEndPoint endpoint)
-        {
-            //TODO
-            //Мастер - MasterNode == endpoint
-        }
-
         public SimpleStorageConfiguration GetConfiguration()
         {
             string requestUri = string.Format("http://{0}/api/configuration", endpoint);

@@ -2,6 +2,7 @@
 using Domain;
 using System.Linq;
 using System.Net;
+using System;
 
 namespace Coordinator.Controllers
 {
@@ -11,12 +12,14 @@ namespace Coordinator.Controllers
 
         public CoordinatorController(SimpleStorageConfiguration configuration)
         {
+            if (configuration.Topology == null || !configuration.Topology.Any() || configuration.Topology.Any(s => s == null || !s.Any()))
+                throw new ArgumentException("Bad configuration!", "configuration");
             this.configuration = configuration;
         }
 
-        public IPEndPoint Get(string id)
+        public IPEndPoint[] Get(string id)
         {
-            return configuration.CurrentNodeEndpoint;
+            return configuration.Topology.First();
         }
     }
 }

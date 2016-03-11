@@ -41,9 +41,12 @@ namespace SimpleStorage.Controllers
             storage.Set(id, value);
 		}
 
-        private IPEndPoint GetShardEndpoint(string id)
+        private IPEndPoint[] GetShardEndpoint(string id)
         {
-            return configuration.CurrentNodeEndpoint;
+            if (configuration.Topology == null)
+                return new[]{ configuration.CurrentNodeEndpoint };
+
+            return configuration.Topology.First();
         }
 	}
 }

@@ -9,19 +9,30 @@ namespace Client
 {
 	public class SimpleStorageClient
 	{
-		private readonly IPEndPoint[] endpoints;
+        private readonly IPEndPoint[][] topology;
 
-		public SimpleStorageClient(params IPEndPoint[] endpoints)
+        public SimpleStorageClient(IPEndPoint[][] topology)
 		{
-			if (endpoints == null || !endpoints.Any())
-				throw new ArgumentException("Empty endpoints!", "endpoints");
-			this.endpoints = endpoints;
+            if (topology == null || !topology.Any())
+				throw new ArgumentException("Empty topology!", "topology");
+            if (topology.Any(s => s == null || !s.Any()))
+                throw new ArgumentException("Bad topology!", "topology");
+            this.topology = topology;
 		}
+
+        public SimpleStorageClient(IPEndPoint endpoint)
+        {
+            if (endpoint == null)
+                throw new ArgumentException("Null endpoint!", "endpoint");
+
+            topology = new []{ new[]{ endpoint } };
+        }
 
 		public void Put(string id, Value value)
 		{
-            var endpoint = GetShardEndpoint(id);
-			var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
+            var replicas = GetShardEndpoint(id);
+            var endpoint = replicas.First();
+            var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.PutAsJsonAsync(requestUri, value).Result)
 				response.EnsureSuccessStatusCode();
@@ -29,7 +40,8 @@ namespace Client
 
 		public Value Get(string id)
 		{
-            var endpoint = GetShardEndpoint(id);
+            var replicas = GetShardEndpoint(id);
+            var endpoint = replicas.First();
             var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.GetAsync(requestUri).Result) {
@@ -38,9 +50,9 @@ namespace Client
 			}
 		}
 
-        private EndPoint GetShardEndpoint(string id)
+        private IEnumerable<EndPoint> GetShardEndpoint(string id)
         {
-            return endpoints.First();
+            return topology.First();
         }
 	}
 }
