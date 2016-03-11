@@ -1,9 +1,14 @@
 #Задания
 
-## Master-slave репликация
-Есть мастер, есть oplog, слэйвы синхронизируются с мастера.
+## Репликация
 
-## Quorum read/write
+### Master-slave репликация
+Нужно реализовать репликацию данных на slave-ах, используя oplog мастера. Slave должен возвращать 403 на Put.
+
+Изменения нужно будет вносить в `ValuesController.cs` и в `OperationLogSynchronizer.cs` (нужно правильно реализовать функцию `SynchronizationAction`).
+Выполнение задания проверяют `MasterSlaveReplicationTests`. Нужно сделать так, чтобы все тесты были зелеными.
+
+### Quorum read/write на клиенте
 
 ## Sharding
 
