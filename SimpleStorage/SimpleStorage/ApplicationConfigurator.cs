@@ -4,6 +4,9 @@ using Owin;
 using SimpleStorage.IoC;
 using StructureMap;
 using Core.Web;
+using Microsoft.Owin.BuilderProperties;
+using SimpleStorage.Infrastructure;
+using System.Threading;
 
 namespace SimpleStorage
 {
@@ -30,6 +33,19 @@ namespace SimpleStorage
 			config.Services.Replace(typeof(IExceptionLogger), new ConsoleExceptionLogger());
 			appBuilder.Use<LogMiddleware>();
 			appBuilder.UseWebApi(config);
+
+            var cts = new CancellationTokenSource();
+            var cancellationToken = cts.Token;
+            var synchronizationTask = container.GetInstance<OperationLogSynchronizer>().Synchronize(cancellationToken);
+
+            var token = new AppProperties(appBuilder.Properties).OnAppDisposing;
+            if (token != CancellationToken.None)
+            {
+                token.Register(() => {
+                    cts.Cancel();
+                    synchronizationTask.Wait(cancellationToken);
+                });
+            }
 		}
 	}
 }

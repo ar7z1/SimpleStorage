@@ -9,4 +9,5 @@ namespace SimpleStorage.Infrastructure
         IEnumerable<Operation> Read(int position, int count);
         void RemoveAll();
     }
+
 }

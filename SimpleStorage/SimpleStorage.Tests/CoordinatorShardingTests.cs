@@ -59,7 +59,6 @@ namespace SimpleStorage.Tests
 
             Assert.That(actualEndpoints.Count, Is.EqualTo(3));
         }
-
         //todo тесты должны использовать клиента к сторэджу, который должен использовать координатор
 	}
 }

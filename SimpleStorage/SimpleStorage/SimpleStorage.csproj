@@ -98,6 +98,7 @@
     <Compile Include="LogMiddleware.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CoordinatorController.cs" />
+    <Compile Include="Infrastructure\OperationLogSynchronizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
