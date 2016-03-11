@@ -20,7 +20,7 @@ namespace Client
 
 		public void Put(string id, Value value)
 		{
-            var endpoint = GetEndpoint(id);
+            var endpoint = GetShardEndpoint(id);
 			var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.PutAsJsonAsync(requestUri, value).Result)
@@ -29,7 +29,7 @@ namespace Client
 
 		public Value Get(string id)
 		{
-            var endpoint = GetEndpoint(id);
+            var endpoint = GetShardEndpoint(id);
             var requestUri = string.Format("http://{0}/api/values/{1}", endpoint, id);
 			using (var client = new HttpClient())
 			using (var response = client.GetAsync(requestUri).Result) {
@@ -38,7 +38,7 @@ namespace Client
 			}
 		}
 
-        private EndPoint GetEndpoint(string id)
+        private EndPoint GetShardEndpoint(string id)
         {
             return endpoints.First();
         }
