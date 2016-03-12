@@ -26,6 +26,7 @@ SimpleStorage - очень простая база данных, которая 
 
 * Запустить VisualStudio с правами администратора
 * Выполнить команды:
+
   ```
   netsh http add urlacl url=http://+:15000/ user=Everyone listen=yes
   netsh http add urlacl url=http://+:15001/ user=Everyone listen=yes
