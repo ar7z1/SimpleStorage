@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Web.Http.Controllers;
 using Domain;
 using SimpleStorage.Infrastructure;
-using StructureMap.Configuration.DSL;
-using StructureMap.Graph;
 using StructureMap;
+using StructureMap.Graph;
 
 namespace SimpleStorage.IoC
 {
@@ -15,12 +14,13 @@ namespace SimpleStorage.IoC
             Scan(p =>
             {
                 p.TheCallingAssembly();
-				p.WithDefaultConventions();
+                p.WithDefaultConventions();
                 p.AddAllTypesOf<IHttpController>();
             });
             For<IStorage>().Singleton();
             For<IStateRepository>().Singleton();
             For<IOperationLog>().Singleton();
+            For<OperationLogSynchronizer>().Singleton();
             For<IComparer<Value>>().Use<ValueComparer>().Singleton();
         }
     }

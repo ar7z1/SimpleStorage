@@ -1,13 +1,12 @@
+using System.Net;
 using System.Net.Http;
 using Domain;
-using System.Collections.Generic;
-using System.Net;
 
 namespace Client
 {
     public class SimpleStorageConfigurationClient
     {
-        IPEndPoint endpoint;
+        private readonly IPEndPoint endpoint;
 
         public SimpleStorageConfigurationClient(IPEndPoint endpoint)
         {
@@ -24,9 +23,9 @@ namespace Client
 
         public SimpleStorageConfiguration GetConfiguration()
         {
-            string requestUri = string.Format("http://{0}/api/configuration", endpoint);
+            var requestUri = string.Format("http://{0}/api/configuration", endpoint);
             using (var client = new HttpClient())
-            using (HttpResponseMessage response = client.GetAsync(requestUri).Result)
+            using (var response = client.GetAsync(requestUri).Result)
             {
                 response.EnsureSuccessStatusCode();
                 return response.Content.ReadAsAsync<SimpleStorageConfiguration>().Result;

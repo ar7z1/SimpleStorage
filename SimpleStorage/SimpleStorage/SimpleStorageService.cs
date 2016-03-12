@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.Owin.Hosting;
-using StructureMap;
-using SimpleStorage.IoC;
 using Domain;
+using Microsoft.Owin.Hosting;
+using SimpleStorage.IoC;
+using StructureMap;
 
 namespace SimpleStorage
 {

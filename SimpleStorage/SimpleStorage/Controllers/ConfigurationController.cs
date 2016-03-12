@@ -1,14 +1,12 @@
-﻿using System;
+﻿using System.Net;
 using System.Web.Http;
-using System.Net;
-using SimpleStorage;
 using Domain;
 
 namespace Controllers
 {
     public class ConfigurationController : ApiController
     {
-        private SimpleStorageConfiguration configuration;
+        private readonly SimpleStorageConfiguration configuration;
 
         public ConfigurationController(SimpleStorageConfiguration configuration)
         {
@@ -44,4 +42,3 @@ namespace Controllers
         }
     }
 }
-

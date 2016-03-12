@@ -1,13 +1,13 @@
-using Domain;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using Domain;
 
 namespace SimpleStorage.Infrastructure
 {
     public class OperationLogSynchronizer
     {
-        private SimpleStorageConfiguration configuration;
         private readonly IStorage storage;
+        private readonly SimpleStorageConfiguration configuration;
 
         public OperationLogSynchronizer(SimpleStorageConfiguration configuration, IStorage storage)
         {
@@ -27,7 +27,8 @@ namespace SimpleStorage.Infrastructure
 
             while (true)
             {
-                if (token.IsCancellationRequested) {
+                if (token.IsCancellationRequested)
+                {
                     return;
                 }
                 Thread.Sleep(1000);

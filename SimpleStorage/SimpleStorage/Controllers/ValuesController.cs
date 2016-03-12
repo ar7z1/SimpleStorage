@@ -1,30 +1,27 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Web.Http;
 using Domain;
 using SimpleStorage.Infrastructure;
-using Client;
-using System.Linq;
-using System;
-using System.Net.Http;
 
 namespace SimpleStorage.Controllers
 {
-	public class ValuesController : ApiController
-	{
-		private readonly IStateRepository stateRepository;
-		private readonly IStorage storage;
+    public class ValuesController : ApiController
+    {
         private readonly SimpleStorageConfiguration configuration;
+        private readonly IStateRepository stateRepository;
+        private readonly IStorage storage;
 
-		public ValuesController(IStorage storage,
-		                        IStateRepository stateRepository,
-                                SimpleStorageConfiguration configuration)
-		{
+        public ValuesController(IStorage storage,
+            IStateRepository stateRepository,
+            SimpleStorageConfiguration configuration)
+        {
             this.configuration = configuration;
-			this.storage = storage;
-			this.stateRepository = stateRepository;
-		}
+            this.storage = storage;
+            this.stateRepository = stateRepository;
+        }
 
-		public Value Get(string id)
+        public Value Get(string id)
         {
             stateRepository.ThrowIfNotStarted();
 
@@ -34,19 +31,19 @@ namespace SimpleStorage.Controllers
             return result;
         }
 
-		public void Put(string id, [FromBody] Value value)
-		{
-			stateRepository.ThrowIfNotStarted();
+        public void Put(string id, [FromBody] Value value)
+        {
+            stateRepository.ThrowIfNotStarted();
 
             storage.Set(id, value);
-		}
+        }
 
         private IPEndPoint[] GetShardEndpoint(string id)
         {
             if (configuration.Topology == null)
-                return new[]{ configuration.CurrentNodeEndpoint };
+                return new[] {configuration.CurrentNodeEndpoint};
 
             return configuration.Topology.First();
         }
-	}
+    }
 }

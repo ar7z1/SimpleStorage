@@ -8,14 +8,33 @@ namespace SimpleStorage.Tests.Infrastructure
     [TestFixture]
     public class StorageTests
     {
-        private OperationLog operationLog;
-        private Storage sut;
-
         [SetUp]
         public void SetUp()
         {
             operationLog = new OperationLog();
             sut = new Storage(operationLog, new ValueComparer());
+        }
+
+        private OperationLog operationLog;
+        private Storage sut;
+
+        [Test]
+        public void Get_KnownId_ShouldReturnValue()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content"};
+            sut.Set(id, value);
+
+            var actual = sut.Get(id);
+
+            Assert.That(actual, Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Get_UnknownId_ShouldReturnNull()
+        {
+            var actual = sut.Get("unknownId");
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -42,22 +61,14 @@ namespace SimpleStorage.Tests.Infrastructure
         }
 
         [Test]
-        public void Get_KnownId_ShouldReturnValue()
+        public void RemoveAll_Always_ShouldRemoveAllData()
         {
-            const string id = "id";
-            var value = new Value {Content = "content"};
-            sut.Set(id, value);
+            sut.Set("id", new Value {Content = "content"});
 
-            var actual = sut.Get(id);
+            sut.RemoveAll();
 
-            Assert.That(actual, Is.EqualTo(value));
-        }
-
-        [Test]
-        public void Get_UnknownId_ShouldReturnNull()
-        {
-            var actual = sut.Get("unknownId");
-            Assert.That(actual, Is.Null);
+            var actual = sut.GetAll();
+            Assert.That(actual, Is.Empty);
         }
 
         [Test]
@@ -73,6 +84,17 @@ namespace SimpleStorage.Tests.Infrastructure
         }
 
         [Test]
+        public void Set_NonExistingId_ShouldReturnTrue()
+        {
+            const string id = "id";
+            var value = new Value {Content = "content", Revision = 0};
+
+            var actual = sut.Set(id, value);
+
+            Assert.That(actual, Is.True);
+        }
+
+        [Test]
         public void Set_NonExistingId_ShouldWriteToOperationLog()
         {
             const string id = "id";
@@ -83,17 +105,6 @@ namespace SimpleStorage.Tests.Infrastructure
             var actual = operationLog.Read(0, 1).Single();
             Assert.That(actual.Id, Is.EqualTo(id));
             Assert.That(actual.Value, Is.EqualTo(value));
-        }
-
-        [Test]
-        public void Set_NonExistingId_ShouldReturnTrue()
-        {
-            const string id = "id";
-            var value = new Value {Content = "content", Revision = 0};
-
-            var actual = sut.Set(id, value);
-
-            Assert.That(actual, Is.True);
         }
 
         [Test]
@@ -152,20 +163,6 @@ namespace SimpleStorage.Tests.Infrastructure
         }
 
         [Test]
-        public void Set_StorageContainsOlderValue_ShouldWriteToOperationLog()
-        {
-            const string id = "id";
-            var oldValue = new Value {Content = "oldContent", Revision = 0};
-            sut.Set(id, oldValue);
-            var newValue = new Value {Content = "newContent", Revision = 1};
-
-            sut.Set(id, newValue);
-
-            var actual = operationLog.Read(0, 2).Last();
-            Assert.That(actual.Value, Is.EqualTo(newValue));
-        }
-
-        [Test]
         public void Set_StorageContainsOlderValue_ShouldReturnTrue()
         {
             const string id = "id";
@@ -179,14 +176,17 @@ namespace SimpleStorage.Tests.Infrastructure
         }
 
         [Test]
-        public void RemoveAll_Always_ShouldRemoveAllData()
+        public void Set_StorageContainsOlderValue_ShouldWriteToOperationLog()
         {
-            sut.Set("id", new Value {Content = "content"});
+            const string id = "id";
+            var oldValue = new Value {Content = "oldContent", Revision = 0};
+            sut.Set(id, oldValue);
+            var newValue = new Value {Content = "newContent", Revision = 1};
 
-            sut.RemoveAll();
+            sut.Set(id, newValue);
 
-            var actual = sut.GetAll();
-            Assert.That(actual, Is.Empty);
+            var actual = operationLog.Read(0, 2).Last();
+            Assert.That(actual.Value, Is.EqualTo(newValue));
         }
     }
 }

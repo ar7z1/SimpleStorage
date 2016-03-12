@@ -1,19 +1,14 @@
 ﻿using System.Linq;
+using System.Net;
 using Client;
 using Domain;
 using NUnit.Framework;
-using System.Net;
 
 namespace SimpleStorage.Tests.Controllers
 {
     [TestFixture]
     public class OperationLogControllerFunctionalTests
     {
-        private const int port = 15000;
-        private OperationLogClient operationLogClient;
-        private SimpleStorageClient storageClient;
-        private SimpleStorageConfiguration configuration;
-
         [SetUp]
         public void SetUp()
         {
@@ -22,6 +17,11 @@ namespace SimpleStorage.Tests.Controllers
             operationLogClient = new OperationLogClient(endpoint);
             configuration = new SimpleStorageConfiguration(port);
         }
+
+        private const int port = 15000;
+        private OperationLogClient operationLogClient;
+        private SimpleStorageClient storageClient;
+        private SimpleStorageConfiguration configuration;
 
         [Test]
         public void Read_Always_ShouldReturnAllOperations()
@@ -46,6 +46,16 @@ namespace SimpleStorage.Tests.Controllers
         }
 
         [Test]
+        public void Read_BigPosition_ShouldReturnEmpty()
+        {
+            using (SimpleStorageService.Start(configuration))
+            {
+                var actual = operationLogClient.Read(1000, 1).ToArray();
+                Assert.That(actual.Length, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
         public void Read_WithSeek_ShouldSkip()
         {
             using (SimpleStorageService.Start(configuration))
@@ -57,16 +67,6 @@ namespace SimpleStorage.Tests.Controllers
                 var actual = operationLogClient.Read(1, 1).ToArray();
 
                 Assert.That(actual.Length, Is.EqualTo(1));
-            }
-        }
-
-        [Test]
-        public void Read_BigPosition_ShouldReturnEmpty()
-        {
-            using (SimpleStorageService.Start(configuration))
-            {
-                var actual = operationLogClient.Read(1000, 1).ToArray();
-                Assert.That(actual.Length, Is.EqualTo(0));
             }
         }
     }

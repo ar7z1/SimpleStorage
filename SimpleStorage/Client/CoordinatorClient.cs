@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Net;
 using System.Net.Http;
-using System.Net;
 
 namespace Client
 {
@@ -15,7 +14,7 @@ namespace Client
 
         public IPEndPoint[] Get(string id)
         {
-            string requestUri = string.Format("http://{0}/api/coordinate/{1}", endpoint, id);
+            var requestUri = string.Format("http://{0}/api/coordinate/{1}", endpoint, id);
             using (var client = new HttpClient())
             using (var response = client.GetAsync(requestUri).Result)
             {
