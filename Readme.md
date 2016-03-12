@@ -9,12 +9,17 @@ SimpleStorage - очень простая база данных, которая 
 
 ####[ValuesController.cs](SimpleStorage/SimpleStorage/Controllers/ValuesController.cs):
 
-* Get (id) - позволяет получить значение по ключу. Если ключ неизвестен, то в ответ возвращается `404 Not Found`.
-* Put (id, value) - позволяет записать значение по ключу.
+* `Value Get(string id)` - позволяет получить значение по ключу. Если ключ неизвестен, то в ответ возвращается `404 Not Found`.
+* `void Put(string id, [FromBody] Value value)` - позволяет записать значение по ключу.
 
-####[AdminController](SimpleStorage/SimpleStorage/Controllers/AdminController.cs):
+####[ServiceController](SimpleStorage/SimpleStorage/Controllers/ServiceController.cs):
 
-* GetAllLocalData - позволяет получить все данные, которые есть на узле, к которому обращаемся.
+* `void Stop()` - остановить сервис.
+* `void Start()` - запустить сервис.
+
+####[OperationsController](SimpleStorage/SimpleStorage/Controllers/ServiceController.cs):
+
+* `IEnumerable<Operation> Get(int position, int count)` - получить с нужной позиции нужное количество операций из oplog-а.
 
 ###FAQ
 Если во время запуска тестов возникнет ошибка "Доступ запрещен", значит, приложению запрещено "слушать" нужные порты. Есть несколько способов, как избавиться от подобной ошибки:
