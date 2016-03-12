@@ -38,12 +38,15 @@ namespace SimpleStorage.Tests
             using (SimpleStorageService.Start(new SimpleStorageConfiguration(shard2.Port)))
             using (SimpleStorageService.Start(new SimpleStorageConfiguration(shard3.Port)))
             {
-                Assert.IsTrue(sut.Get(id).Equals(sut.Get(id)));
+                var endpoint1 = sut.Get(id).First();
+                var endpoint2 = sut.Get(id).First();
+
+                Assert.IsTrue(endpoint1.Equals(endpoint2));
             }
         }
 
         [Test]
-        public void Coordinator_DifferentIds_ShouldRouteTo()
+        public void Coordinator_DifferentIds_ShouldRouteToAllShards()
         {
             var actualEndpoints = new HashSet<IPEndPoint>();
 
@@ -59,6 +62,26 @@ namespace SimpleStorage.Tests
 
             Assert.That(actualEndpoints.Count, Is.EqualTo(3));
         }
-        //todo тесты должны использовать клиента к сторэджу, который должен использовать координатор
+
+        [Test]
+        public void StorageClient_Always_CanReadAndWriteToNodeFromCoordinator()
+        {
+            var id = Guid.NewGuid().ToString();
+            var value = new Value{ Content = Guid.NewGuid().ToString() };
+
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(coordinator.Port, coordinatorTopology)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(shard1.Port)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(shard2.Port)))
+            using (SimpleStorageService.Start(new SimpleStorageConfiguration(shard3.Port)))
+            {
+                var endpoint = sut.Get(id).First();
+                var storageClient = new SimpleStorageClient(endpoint);
+                storageClient.Put(id, value);
+
+                var actual = storageClient.Get(id);
+
+                Assert.That(actual.Content, Is.EqualTo(value.Content));
+            }
+        }
 	}
 }
