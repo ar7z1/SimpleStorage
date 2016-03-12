@@ -31,5 +31,6 @@ SimpleStorage - очень простая база данных, которая 
   netsh http add urlacl url=http://+:15000/ user=Everyone listen=yes
   netsh http add urlacl url=http://+:15001/ user=Everyone listen=yes
   netsh http add urlacl url=http://+:15002/ user=Everyone listen=yes
+  netsh http add urlacl url=http://+:15003/ user=Everyone listen=yes
   ```
   Если у вас "русская" Windows, то может помочь заменить `user=Everyone` на `user=Все`.
